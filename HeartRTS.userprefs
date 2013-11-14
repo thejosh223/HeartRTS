@@ -1,12 +1,9 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Vessels\Vessel.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Controllers\CameraController.cs">
     <Files>
-      <File FileName="Assets\Scripts\Vessels\Vessel.cs" Line="90" Column="43" />
-      <File FileName="Assets\Scripts\BCell.cs" Line="20" Column="24" />
-      <File FileName="Assets\Scripts\Heart.cs" Line="88" Column="18" />
-      <File FileName="Assets\Scripts\Controllers\GameController.cs" Line="35" Column="49" />
-      <File FileName="Assets\Scripts\Vessels\VesselEndpoint.cs" Line="29" Column="11" />
+      <File FileName="Assets\Scripts\Controllers\GameController.cs" Line="19" Column="1" />
+      <File FileName="Assets\Scripts\Controllers\CameraController.cs" Line="6" Column="32" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
