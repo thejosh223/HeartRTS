@@ -65,10 +65,33 @@ public class Heart : Organ {
 	}
 
 	private void PumpBlood() {
+		List<VesselEndpoint> endpoints = new List<VesselEndpoint>();
+		List<Vessel> visited = new List<Vessel>();
+		GetEndpoints(endpoints, visited, this);
+
 		for (int i = 0; i < attachedNodes.Count; i++) {
-			BCell b = new BCell();
-			b.nextTarget = attachedNodes[i].node;
-			attachedNodes[i].segment.BCellEnter(b);
+			for (int o = 0; o < 2; o++) {
+				BCell b = new BCell();
+				b.SetTarget(this, endpoints[Random.Range(0, endpoints.Count - 1)]);
+				attachedNodes[i].segment.BCellEnter(b);
+			}
+		}
+	}
+
+	private void GetEndpoints(List<VesselEndpoint> list, List<Vessel> visited, Vessel currentTraversal) {
+		// TEST ONLY!!!
+		Vessel[] nextNodes = currentTraversal.GetNextNodes();
+		visited.Add(currentTraversal);
+
+		bool added = false;
+		for (int i = 0; i < nextNodes.Length; i++) {
+			if (!visited.Contains(nextNodes[i])) {
+				GetEndpoints(list, visited, nextNodes[i]);
+				added = true;
+			}
+		}
+		if (!added) {
+			list.Add((VesselEndpoint)currentTraversal);
 		}
 	}
 
