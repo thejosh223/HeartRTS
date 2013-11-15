@@ -11,7 +11,6 @@ public class BuildController : MonoBehaviour {
 	}
 	
 	void Update() {
-
 		if (Input.GetMouseButton(0)) {
 			if (Input.GetMouseButtonDown(0)) {
 				// Raycast

@@ -8,14 +8,12 @@ public class CameraController : MonoBehaviour {
 	// References
 	protected Camera cam;
 
-	// Screen Data
-	private float frustrumWidth;
-	private float frustrumHeight;
-
 	// Movement Controls
-	protected bool isMouseSet = false;
 	protected Vector3 initCamDown;
+	protected bool isMouseSet = false;
 	protected Vector3 initMouseDown;
+	protected bool isMouse2Set = false;
+	protected Vector3 initMouse2Down;
 
 	void Awake() {
 		_instance = this;
@@ -23,30 +21,69 @@ public class CameraController : MonoBehaviour {
 
 	void Start() {
 		cam = GetComponent<Camera>();
-		frustrumHeight = 2f * Mathf.Abs(transform.position.z) * Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
-		frustrumWidth = frustrumHeight * cam.aspect;
-		Debug.Log("Frustrum = (" + frustrumWidth + ", " + frustrumHeight + ")");
 	}
 
 	void Update() {
 		if (!_allowCamMovement) 
 			return;
 
-		if (Input.GetMouseButton(0)) {			
-			Vector3 viewportPt = cam.ScreenToViewportPoint(Input.mousePosition);
+		if (Input.GetMouseButton(0)) { // At least one button is down
+			/*
+			 * Data Collection
+			 */
+			// Variable Inits
+			Vector3 viewportPt1 = Vector3.zero;
+			Vector3 viewportPt2 = Vector3.zero;
+			viewportPt1 = cam.ScreenToViewportPoint(Input.mousePosition);
 
 			// Init [mouseDownAt]
 			if (!isMouseSet) {
 				isMouseSet = true;
 				initCamDown = transform.position;
-				initMouseDown = viewportPt;
+				initMouseDown = viewportPt1;
 			}
 
+			// Multitouch Pinch
+			if (Input.touchCount >= 2 || Input.GetKey(KeyCode.LeftControl)) {
+				// ACTUAL CODE (for Android)
+//				Vector2 touch2 = Input.GetTouch(0).position;
+//				viewportPt2 = cam.ScreenToViewportPoint(new Vector3(touch2.x, touch2.y, 0));
+
+				// DEBUG FOR PC
+				viewportPt2 = new Vector3(0.5f, 0.5f, 0);
+
+				if (!isMouse2Set) {
+					isMouse2Set = true;
+					initMouse2Down = viewportPt2;
+				}
+			} else {
+				isMouse2Set = false;
+			}
+
+			/*
+			 * Moving the actual camera
+			 */
+			// Zoom Camera
+			float newZ = initCamDown.z;
+			if (isMouse2Set) {
+				float initDist = Vector3.Distance(initMouseDown, initMouse2Down);
+				float newDist = Vector3.Distance(viewportPt1, viewportPt2);
+				
+				float initFrustrumHeight = 2f * Mathf.Abs(initCamDown.z) * Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
+				float targetHeight = (initDist / newDist) * initFrustrumHeight;
+				newZ = - (targetHeight / (2f * Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad)));
+			}
+			
 			// Move camera into the proper place
-			Vector3 delta = viewportPt - initMouseDown;
-			delta = -new Vector3(delta.x * frustrumWidth, delta.y * frustrumHeight, 0);
-//			Debug.Log("Delta: " + delta);
-			transform.position = initCamDown + delta;
+			float frustrumHeight = 2f * Mathf.Abs(transform.position.z) * Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
+			float frustrumWidth = frustrumHeight * cam.aspect;
+			Vector3 delta = viewportPt1 - initMouseDown;
+			delta.x *= frustrumWidth;
+			delta.y *= frustrumHeight;
+			delta.z = 0;
+			Vector3 newPos = initCamDown - delta;
+			newPos.z = newZ;
+			transform.position = newPos;
 		}
 
 		if (Input.GetMouseButtonUp(0)) {
