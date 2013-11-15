@@ -69,16 +69,12 @@ public class Heart : Organ {
 		List<Vessel> visited = new List<Vessel>();
 		GetEndpoints(endpoints, visited, this);
 
-		for (int i = 0; i < attachedNodes.Count; i++) {
-			for (int o = 0; o < 2; o++) {
-				Debug.Log("Endpoints Count: " + endpoints.Count);
-				int randomEndpoint = endpoints.Count == 1 ? 0 : Random.Range(0, endpoints.Count - 1);
+		if (endpoints.Count == 0)
+			return;
 
-				BCell b = new BCell();
-				b.SetTarget(this, endpoints[randomEndpoint]);
-				attachedNodes[i].segment.BCellEnter(b);
-			}
-		}
+		BCell b = new BCell();
+		b.SetTarget(this, endpoints[Random.Range(0, endpoints.Count)]);
+		GetImmediateVesselTo(b.nextTarget).BCellEnter(b);
 	}
 
 	private void GetEndpoints(List<VesselEndpoint> list, List<Vessel> visited, Vessel currentTraversal) {
