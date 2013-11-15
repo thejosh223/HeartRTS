@@ -44,7 +44,7 @@ public class CameraController : MonoBehaviour {
 			}
 
 			// Multitouch Pinch
-			if (Input.touchCount >= 2 || Input.GetKey(KeyCode.LeftControl)) {
+			if (Input.touchCount >= 2 || Input.GetKey(KeyCode.LeftShift)) {
 				// ACTUAL CODE (for Android)
 //				Vector2 touch2 = Input.GetTouch(0).position;
 //				viewportPt2 = cam.ScreenToViewportPoint(new Vector3(touch2.x, touch2.y, 0));
