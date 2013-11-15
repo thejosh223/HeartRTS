@@ -27,7 +27,7 @@ public class BuildController : MonoBehaviour {
 			}
 
 			if (sourceVessel != null) {
-				Debug.Log("Vessel: " + sourceVessel.name);
+//				Debug.Log("Vessel: " + sourceVessel.name);
 			}
 		}
 
