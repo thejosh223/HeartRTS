@@ -9,6 +9,7 @@ public class BuildController : MonoBehaviour {
 
 	// Build Guidelines
 	private GameObject radiusIdentifier;
+	private LineRenderer radiusLineRenderer;
 	private Color activeColor = new Color(109 / 255f, 194 / 255f, 255 / 255f);
 	private Color inactiveColor = new Color(255 / 255f, 131 / 255f, 119 / 255f);
 
@@ -17,6 +18,9 @@ public class BuildController : MonoBehaviour {
 
 		radiusIdentifier = transform.FindChild("RadiusMarker").gameObject;
 		radiusIdentifier.SetActive(false);
+
+		radiusLineRenderer = radiusIdentifier.GetComponent<LineRenderer>();
+		radiusLineRenderer.material.color = inactiveColor;
 	}
 	
 	void Update() {
@@ -37,7 +41,15 @@ public class BuildController : MonoBehaviour {
 				// Check supposed distance
 				Vector3 v = RaycastXYPlane(Input.mousePosition);
 				float dist = Vector3.Distance(v, _sourceVessel.transform.position);
-				radiusIdentifier.renderer.material.color = dist <= buildRadius ? activeColor : inactiveColor;
+
+				if (dist <= buildRadius) {
+					radiusIdentifier.renderer.material.color = activeColor;
+					radiusLineRenderer.enabled = true;
+					radiusLineRenderer.SetPosition(1, v + Vector3.forward * -0.01f);
+				} else {
+					radiusIdentifier.renderer.material.color = inactiveColor;
+					radiusLineRenderer.enabled = false;
+				}
 			}
 		}
 
@@ -65,6 +77,8 @@ public class BuildController : MonoBehaviour {
 			if (value != null) {
 				radiusIdentifier.transform.position = _sourceVessel.transform.position;
 				radiusIdentifier.transform.localScale = new Vector3(buildRadius * 2f, buildRadius * 2f, buildRadius * 2f);
+
+				radiusLineRenderer.SetPosition(0, _sourceVessel.transform.position + Vector3.forward * -0.01f);
 			}
 		}
 	}
