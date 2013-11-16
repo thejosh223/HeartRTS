@@ -1,9 +1,14 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Controllers\BuildController.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Organs\Organ.cs">
     <Files>
-      <File FileName="Assets\Scripts\Controllers\BuildController.cs" Line="51" Column="41" />
-      <File FileName="Assets\Scripts\Controllers\CameraController.cs" Line="47" Column="34" />
+      <File FileName="Assets\Scripts\Organs\Organ.cs" Line="3" Column="34" />
+      <File FileName="Assets\Scripts\Controllers\BuildController.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Heart.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Organs\Liver.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Organs\Organ.cs" Line="3" Column="34" />
+      <File FileName="Assets\Scripts\Vessels\Vessel.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Vessels\VesselContainer.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

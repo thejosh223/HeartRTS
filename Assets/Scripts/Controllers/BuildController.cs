@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class BuildController : MonoBehaviour {
 
@@ -8,8 +9,9 @@ public class BuildController : MonoBehaviour {
 	protected Plane xyZeroPlane;
 
 	// Build Guidelines
+	private static float LINE_RENDERER_OFFSET = 2f;
 	private GameObject radiusIdentifier;
-	private LineRenderer radiusLineRenderer;
+	private List<VesselLineRenderer> radiusLineRenderers = new List<VesselLineRenderer>();
 	private Color activeColor = new Color(109 / 255f, 194 / 255f, 255 / 255f);
 	private Color inactiveColor = new Color(255 / 255f, 131 / 255f, 119 / 255f);
 
@@ -18,9 +20,6 @@ public class BuildController : MonoBehaviour {
 
 		radiusIdentifier = transform.FindChild("RadiusMarker").gameObject;
 		radiusIdentifier.SetActive(false);
-
-		radiusLineRenderer = radiusIdentifier.GetComponent<LineRenderer>();
-		radiusLineRenderer.material.color = inactiveColor;
 	}
 	
 	void Update() {
@@ -44,11 +43,53 @@ public class BuildController : MonoBehaviour {
 
 				if (dist <= buildRadius) {
 					radiusIdentifier.renderer.material.color = activeColor;
-					radiusLineRenderer.enabled = true;
-					radiusLineRenderer.SetPosition(1, v + Vector3.forward * -0.01f);
+
+					// Get all in radius
+					Collider[] hitColliders = Physics.OverlapSphere(v, buildRadius);
+					List<Vessel> hitVessels = new List<Vessel>();
+
+					// Add all not yet in radius
+					for (int i = 0; i < hitColliders.Length; i++) {
+						Vessel hitColliderVessel = hitColliders[i].GetComponent<Vessel>();
+						if (hitColliderVessel != null) {
+							hitVessels.Add(hitColliderVessel);
+
+							bool found = false;
+							for (int o = 0; o < radiusLineRenderers.Count; o++) 
+								if (radiusLineRenderers[o].v == hitColliderVessel)
+									found = true;
+							if (!found) {
+								LineRenderer r = LineRendererPool.Instance.InstantiateAt();
+								Vector3 radiusLineBasePos = hitColliderVessel.transform.position;
+								Vector3 directionToCam = (CameraController.Instance.transform.position - radiusLineBasePos).normalized;
+								r.SetPosition(0, radiusLineBasePos + directionToCam * LINE_RENDERER_OFFSET);
+								radiusLineRenderers.Add(new VesselLineRenderer(hitColliderVessel, r));
+							}
+						}
+					}
+
+					// Remove all not in radius anymore and/or invalid positions
+					for (int i = 0; i < radiusLineRenderers.Count; i++) {
+						bool found = false;
+						for (int o = 0; o < hitVessels.Count; o++) 
+							if (hitVessels[o] == radiusLineRenderers[i].v)
+								found = true;
+						if (!found) {
+							radiusLineRenderers[i].r.gameObject.SetActive(false);
+							radiusLineRenderers.RemoveAt(i--);
+						}
+					}
+
+					for (int i = 0; i < radiusLineRenderers.Count; i++) {
+						Vector3 directionToCam = (CameraController.Instance.transform.position - v).normalized;
+						radiusLineRenderers[i].r.SetPosition(1, v + directionToCam * LINE_RENDERER_OFFSET);
+					}
 				} else {
 					radiusIdentifier.renderer.material.color = inactiveColor;
-					radiusLineRenderer.enabled = false;
+					
+					for (int i = 0; i < radiusLineRenderers.Count; i++) 
+						radiusLineRenderers[i].r.gameObject.SetActive(false);
+					radiusLineRenderers.Clear();
 				}
 			}
 		}
@@ -60,8 +101,18 @@ public class BuildController : MonoBehaviour {
 				float dist = Vector3.Distance(v, _sourceVessel.transform.position);
 
 				// Instantiate new segment
-				if (dist <= buildRadius)
-					InstantiateVessel(_sourceVessel, v);
+				if (dist <= buildRadius) {
+					// Get all endpoints in radius
+					Collider[] hitColliders = Physics.OverlapSphere(v, buildRadius);
+					
+					Vessel newlyInitted = InstantiateVessel(_sourceVessel, v);
+					for (int i = 0; i < hitColliders.Length; i++) {
+						Vessel hitColliderVessel = hitColliders[i].GetComponent<Vessel>();
+						if (hitColliderVessel != null && hitColliderVessel != _sourceVessel) {
+							newlyInitted.AttachVessel(hitColliderVessel);
+						}
+					}
+				}
 			} 
 
 			SourceVessel = null;
@@ -74,20 +125,29 @@ public class BuildController : MonoBehaviour {
 			CameraController.Instance.SetCamMovable(value == null);
 			radiusIdentifier.SetActive(value != null);
 
+			for (int i = 0; i < radiusLineRenderers.Count; i++) 
+				radiusLineRenderers[i].r.gameObject.SetActive(false);
+			radiusLineRenderers.Clear();
+
 			if (value != null) {
 				radiusIdentifier.transform.position = _sourceVessel.transform.position;
 				radiusIdentifier.transform.localScale = new Vector3(buildRadius * 2f, buildRadius * 2f, buildRadius * 2f);
 
-				radiusLineRenderer.SetPosition(0, _sourceVessel.transform.position + Vector3.forward * -0.01f);
+				Vector3 radiusLineBasePos = _sourceVessel.transform.position;
+				Vector3 directionToCam = (CameraController.Instance.transform.position - radiusLineBasePos).normalized;
+				LineRenderer r = LineRendererPool.Instance.InstantiateAt();
+				r.SetPosition(0, radiusLineBasePos + directionToCam * LINE_RENDERER_OFFSET);
+				radiusLineRenderers.Add(new VesselLineRenderer(_sourceVessel, r));
 			}
 		}
 	}
 
-	public void InstantiateVessel(Vessel attachedTo, Vector3 pos) {
+	public Vessel InstantiateVessel(Vessel attachedTo, Vector3 pos) {
 		GameObject g = Instantiate(Heart.Instance.vNodePrefab, pos, Quaternion.identity) as GameObject;
 		VesselEndpoint v = g.GetComponent<VesselEndpoint>();
 		v.name = "VesselEndpoint_" + GameController.vesselCounter++;
 		v.AttachVessel(attachedTo);
+		return v;
 	}
 
 	protected RaycastHit Raycast(Vector3 v) {
@@ -115,5 +175,18 @@ public class BuildController : MonoBehaviour {
 
 	public static BuildController Instance {
 		get { return _instance; }
+	}
+
+	/*
+	 * For use with the line renderer
+	 */
+	public class VesselLineRenderer {
+		public Vessel v;
+		public LineRenderer r;
+
+		public VesselLineRenderer (Vessel v, LineRenderer r) {
+			this.v = v;
+			this.r = r;
+		}
 	}
 }

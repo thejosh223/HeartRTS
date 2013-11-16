@@ -99,6 +99,10 @@ public class CameraController : MonoBehaviour {
 		}
 	}
 
+	public Camera Cam {
+		get { return cam; }
+	}
+
 	private static CameraController _instance;
 
 	public static CameraController Instance {

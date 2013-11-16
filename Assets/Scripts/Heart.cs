@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Heart : Organ {
+public class Heart : Vessel {
 
 	// Heart Stats
 	private bool isBeating = false;
@@ -65,9 +65,9 @@ public class Heart : Organ {
 	}
 
 	private void PumpBlood() {
-		List<VesselEndpoint> endpoints = new List<VesselEndpoint>();
+		List<Organ> endpoints = new List<Organ>();
 		List<Vessel> visited = new List<Vessel>();
-		GetEndpoints(endpoints, visited, this);
+		GetOrgans(endpoints, visited, this);
 
 		if (endpoints.Count == 0)
 			return;
@@ -75,6 +75,20 @@ public class Heart : Organ {
 		BCell b = new BCell();
 		b.SetTarget(this, endpoints[Random.Range(0, endpoints.Count)]);
 		GetImmediateVesselTo(b.nextTarget).BCellEnter(b);
+	}
+
+	private void GetOrgans(List<Organ> list, List<Vessel> visited, Vessel currentTraversal) {
+		if (currentTraversal is Organ) 
+			list.Add((Organ)currentTraversal);
+
+		Vessel[] nextNodes = currentTraversal.GetNextNodes();
+		if (nextNodes.Length == 0)
+			return;
+
+		visited.Add(currentTraversal);
+		for (int i = 0; i < nextNodes.Length; i++) 
+			if (!visited.Contains(nextNodes[i])) 
+				GetOrgans(list, visited, nextNodes[i]);
 	}
 
 	private void GetEndpoints(List<VesselEndpoint> list, List<Vessel> visited, Vessel currentTraversal) {
@@ -91,9 +105,8 @@ public class Heart : Organ {
 				added = true;
 			}
 		}
-		if (!added) {
+		if (!added) 
 			list.Add((VesselEndpoint)currentTraversal);
-		}
 	}
 
 	/*

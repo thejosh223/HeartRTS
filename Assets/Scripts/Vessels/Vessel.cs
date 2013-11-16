@@ -31,8 +31,6 @@ public class Vessel : MonoBehaviour {
 	 * Helper Functions
 	 */
 	public Vessel GetImmediateVesselTo(Vessel v) {
-//		Debug.Log("AttachedNodes: " + attachedNodes.Count);
-//		Debug.Log("Find To: " + v.name + " from " + this.name);	
 		for (int i = 0; i < attachedNodes.Count; i++) {
 			if (attachedNodes[i].node == v) {
 				return attachedNodes[i].NextImmediateVessel();
