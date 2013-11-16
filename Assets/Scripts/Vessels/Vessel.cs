@@ -16,6 +16,9 @@ public class Vessel : MonoBehaviour {
 	protected virtual void Start() {
 	}
 
+	protected virtual void Update() {
+	}
+
 	/*
 	 * Get Vessel Endpoints
 	 * -aka. the graph nodes

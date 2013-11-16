@@ -2,7 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 
-public class Heart : Vessel {
+public class Heart : Organ {
+
+	public static float STARTING_ENERGY = 1000f;
 
 	// Heart Stats
 	private bool isBeating = false;
@@ -23,16 +25,34 @@ public class Heart : Vessel {
 	}
 
 	protected override void Start() {
+		base.Start();
+
 		// Defaults
 		baseScale = transform.localScale;
 
+		// Energy
+		energy = STARTING_ENERGY;
+
+		// Starting Cells
+		for (int i = 0; i < 10; i++) {
+			BCell b = new BCell();
+			b.targetOrgan = null;
+
+			BCellEnter(new BCell());
+		}
+
+		// Start the heart
 		StartBeating();
 	}
 
-	void Update() {
+	protected override void Update() {
+		base.Update();
+
 		// Beating Animation
-		if (lastBeatTime + heartRate <= Time.time) {
-			Beat();
+		if (isBeating) {
+			if (lastBeatTime + heartRate <= Time.time) {
+				Beat();
+			}
 		}
 	}
 
@@ -65,18 +85,45 @@ public class Heart : Vessel {
 	}
 
 	private void PumpBlood() {
-		List<Organ> endpoints = new List<Organ>();
-		List<Vessel> visited = new List<Vessel>();
-		GetOrgans(endpoints, visited, this);
-
-		if (endpoints.Count == 0)
-			return;
-
-		BCell b = new BCell();
-		b.SetTarget(this, endpoints[Random.Range(0, endpoints.Count)]);
-		GetImmediateVesselTo(b.nextTarget).BCellEnter(b);
+//		for (int i = 0; i < currentCells.Count; i++) {
+//			if (currentCells[i].targetOrgan != null) {
+//				if (BCell.HasPathTo(this, currentCells[i].targetOrgan))
+//					PumpOutCell(currentCells[i], currentCells[i].targetOrgan);
+//			}
+//		}
 	}
 
+	public override void PumpOutCell(BCell b, Organ target) {
+		base.PumpOutCell(b, target);
+
+		// Set Behaviour			
+		switch (b.MovementMode) {
+			case MovementType.DepositAtHeart:
+				b.MovementMode = MovementType.GatherAtOrgan;
+				break;
+			case MovementType.GatherAtHeart:
+				b.MovementMode = MovementType.DepositAtOrgan;
+				break;
+			default:
+				Debug.LogError("It Defaulted! This should not happen.");
+				break;
+		}
+	}
+
+	public void TargetCell(Organ org) {
+		for (int i = 0; i < currentCells.Count; i++) {
+			if (currentCells[i].targetOrgan == null) {
+				currentCells[i].MovementMode = MovementType.GatherAtHeart;
+				currentCells[i].targetOrgan = org;
+
+				return;
+			}
+		}
+	}
+
+	/*
+	 * Search Functions
+	 */
 	private void GetOrgans(List<Organ> list, List<Vessel> visited, Vessel currentTraversal) {
 		if (currentTraversal is Organ) 
 			list.Add((Organ)currentTraversal);
@@ -89,24 +136,6 @@ public class Heart : Vessel {
 		for (int i = 0; i < nextNodes.Length; i++) 
 			if (!visited.Contains(nextNodes[i])) 
 				GetOrgans(list, visited, nextNodes[i]);
-	}
-
-	private void GetEndpoints(List<VesselEndpoint> list, List<Vessel> visited, Vessel currentTraversal) {
-		// TEST ONLY!!!
-		Vessel[] nextNodes = currentTraversal.GetNextNodes();
-		if (nextNodes.Length == 0)
-			return;
-		visited.Add(currentTraversal);
-
-		bool added = false;
-		for (int i = 0; i < nextNodes.Length; i++) {
-			if (!visited.Contains(nextNodes[i])) {
-				GetEndpoints(list, visited, nextNodes[i]);
-				added = true;
-			}
-		}
-		if (!added) 
-			list.Add((VesselEndpoint)currentTraversal);
 	}
 
 	/*

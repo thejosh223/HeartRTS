@@ -4,14 +4,22 @@ using System.Collections.Generic;
 
 public class BCell {
 
+	// Movement Values
 	public Vessel finalTarget;
 	public Vessel nextTarget;
 	public Vessel currentVessel;
+	
+	//
+	public Organ targetOrgan;
+	private float _carryingEnergy;
+	private float _maxEnergy = 10f;
+	public MovementType _movementMode;
 
 	public BCell () {
 	}
 
 	public void OnVesselEnter(Vessel v) {
+		// Basics
 		currentVessel = v;
 		if (v == finalTarget) {
 			nextTarget = null;
@@ -19,8 +27,16 @@ public class BCell {
 		}
 		if (v == nextTarget) 
 			nextTarget = SearchNextTarget();
+
+		// Other
+		if (v is Organ) {
+			targetOrgan = (Organ)v;
+		}
 	}
 
+	/*
+	 * Movement
+	 */
 	public Vessel SearchNextTarget() {
 		List<Node> openSet = new List<Node>();
 		List<Node> closedSet = new List<Node>();
@@ -89,24 +105,38 @@ public class BCell {
 		return null;
 	}
 
-	public void SetTarget(Vessel current, Vessel v) {
+	public bool SetTarget(Vessel current, Organ v) {
 		currentVessel = current;
 		finalTarget = v;
 		nextTarget = SearchNextTarget();
 
-//		Debug.Log("Final Target: " + finalTarget.name);
-//		Debug.Log("Next Target: " + nextTarget.name);
+		if (nextTarget == null)
+			return false;
+		return true;
+	}
+	
+	public bool IsAtDestination() {
+		return currentVessel == finalTarget;
 	}
 
-	public BCell[] Divide(int count) {
-		BCell[] b = new BCell[count];
-		b[0] = this;
-		for (int i = 1; i < b.Length; i++)
-			b[i] = new BCell();
-		return b;
+	/*
+	 * Setters
+	 */
+	public float CurrentEnergy {
+		get { return _carryingEnergy; }
+		set { 
+			_carryingEnergy = value; 
+		}
 	}
 
+	public float MaxEnergy {
+		get { return _maxEnergy; }
+	}
 
+	public MovementType MovementMode {
+		get { return _movementMode; }
+		set { _movementMode = value; }
+	}
 
 	/*
 	 * A Star
