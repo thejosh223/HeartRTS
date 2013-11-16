@@ -29,7 +29,9 @@ public class BuildController : MonoBehaviour {
 				RaycastHit hit = Raycast(Input.mousePosition);
 				if (hit.transform != null) {
 					// It hit something!
-					SourceVessel = hit.transform.GetComponent<Vessel>();
+					Vessel hitVessel = hit.transform.GetComponent<Vessel>();
+					if (BCell.HasPathTo(Heart.Instance, hitVessel)) 
+						SourceVessel = hitVessel;
 				} else {
 					// Nothing hit.
 					SourceVessel = null;

@@ -106,6 +106,77 @@ public class BCell {
 		return b;
 	}
 
+
+
+	/*
+	 * A Star
+	 */
+	public static bool HasPathTo(Vessel start, Vessel end) {
+		List<Node> openSet = new List<Node>();
+		List<Node> closedSet = new List<Node>();
+		
+		openSet.Add(new Node(start, 0f, Vector3.Distance(start.transform.position, end.transform.position)));
+		while (openSet.Count > 0) {
+			// Find the Node with the lowest F
+			int lowestIndex = 0;
+			for (int i = 1; i < openSet.Count; i++) {
+				if (openSet[i].f < openSet[lowestIndex].f) {
+					lowestIndex = i;
+				}
+			}
+			
+			Node current = openSet[lowestIndex];
+			openSet.RemoveAt(lowestIndex);
+			closedSet.Add(current);
+			
+			if (current.pos == end) {
+				// Found!
+				return true;
+			}
+			
+			Vessel[] neighbors = current.pos.GetNextNodes();
+			for (int i = 0; i < neighbors.Length; i++) {
+				float tentative_g = current.g + Vector3.Distance(neighbors[i].transform.position, current.pos.transform.position);
+				
+				// Check if the node has already been visited
+				bool found = false;
+				for (int j = 0; j < closedSet.Count; j++) {
+					if (closedSet[j].pos == neighbors[i]) {
+						found = true;
+						break;
+					}
+				}
+				if (found)
+					continue;
+				
+				// Check if neighbor is in openSet
+				bool inOpenSet = false;
+				int o = 0;
+				for (o = 0; o < openSet.Count; o++) {
+					if (openSet[o].pos == neighbors[i]) {
+						inOpenSet = true;
+						break;
+					}
+				}
+				
+				Node n;
+				if (!inOpenSet || tentative_g < current.g) {
+					if (!inOpenSet) {
+						n = new Node(neighbors[i], tentative_g, tentative_g + //
+							Vector3.Distance(neighbors[i].transform.position, end.transform.position));
+						openSet.Add(n);
+					} else {
+						n = openSet[o];
+					}
+					n.parent = current;
+					n.g = tentative_g;
+					n.f = tentative_g + Vector3.Distance(neighbors[i].transform.position, end.transform.position);
+				}
+			}
+		}
+		return false;
+	}
+
 	protected class Node {
 		public Node parent;
 		public Vessel pos;
