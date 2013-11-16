@@ -2,10 +2,10 @@
 using System.Collections;
 
 public class Liver : Organ {
-	
-	void OnMouseDown() {
-		Heart.Instance.TargetCell(this);
-		Debug.Log("Target Liver!");
+
+	public override void OnRequestCell(BCell b) {
+		base.OnRequestCell(b);
+		b.MovementMode = MovementType.GatherAtHeart;
 	}
 
 	public override void PumpOutCell(BCell b, Organ target) {

@@ -10,7 +10,7 @@ public class BCell {
 	public Vessel currentVessel;
 	
 	//
-	public Organ targetOrgan;
+	public Organ _targetOrgan;
 	private float _carryingEnergy;
 	private float _maxEnergy = 10f;
 	public MovementType _movementMode;
@@ -30,7 +30,7 @@ public class BCell {
 
 		// Other
 		if (v is Organ) {
-			targetOrgan = (Organ)v;
+			_targetOrgan = (Organ)v;
 		}
 	}
 
@@ -136,6 +136,11 @@ public class BCell {
 	public MovementType MovementMode {
 		get { return _movementMode; }
 		set { _movementMode = value; }
+	}
+
+	public Organ TargetOrgan {
+		get { return _targetOrgan; }
+		set { _targetOrgan = value; }
 	}
 
 	/*

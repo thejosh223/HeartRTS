@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class BuildController : MonoBehaviour {
 
+	protected float minBuildRadius = 2f;
 	protected float buildRadius = 8f;
 	private Vessel _sourceVessel;
 	protected Plane xyZeroPlane;
@@ -43,7 +44,7 @@ public class BuildController : MonoBehaviour {
 				Vector3 v = RaycastXYPlane(Input.mousePosition);
 				float dist = Vector3.Distance(v, _sourceVessel.transform.position);
 
-				if (dist <= buildRadius) {
+				if (dist <= buildRadius && dist >= minBuildRadius) {
 					radiusIdentifier.renderer.material.color = activeColor;
 
 					// Get all in radius
@@ -103,7 +104,7 @@ public class BuildController : MonoBehaviour {
 				float dist = Vector3.Distance(v, _sourceVessel.transform.position);
 
 				// Instantiate new segment
-				if (dist <= buildRadius) {
+				if (dist <= buildRadius && dist >= minBuildRadius) {
 					// Get all endpoints in radius
 					Collider[] hitColliders = Physics.OverlapSphere(v, buildRadius);
 					
@@ -112,6 +113,17 @@ public class BuildController : MonoBehaviour {
 						Vessel hitColliderVessel = hitColliders[i].GetComponent<Vessel>();
 						if (hitColliderVessel != null && hitColliderVessel != _sourceVessel) {
 							newlyInitted.AttachVessel(hitColliderVessel);
+						}
+					}
+				}
+
+				// TEST!!!
+				if (dist <= minBuildRadius) {
+					if (_sourceVessel is Organ && _sourceVessel != Heart.Instance) {
+						// Target the Organ
+						BCell b = Heart.Instance.GetIdleCell();
+						if (b != null) {
+							((Organ)_sourceVessel).OnRequestCell(b);
 						}
 					}
 				}

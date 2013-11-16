@@ -15,7 +15,7 @@ public class Organ : Vessel {
 		for (int i = 0; i < currentCells.Count; i++) {
 			BCell b = currentCells[i];
 
-			if (b.targetOrgan == null)
+			if (b.TargetOrgan == null)
 				continue;
 
 			float energyTransfer = 0;
@@ -40,7 +40,7 @@ public class Organ : Vessel {
 			switch (b.MovementMode) {
 				case MovementType.DepositAtHeart:
 					if (b.CurrentEnergy == 0)
-						PumpOutCell(b, b.targetOrgan);
+						PumpOutCell(b, b.TargetOrgan);
 					break;
 				case MovementType.DepositAtOrgan:
 					if (b.CurrentEnergy == 0)
@@ -48,7 +48,7 @@ public class Organ : Vessel {
 					break;
 				case MovementType.GatherAtHeart:
 					if (b.CurrentEnergy == b.MaxEnergy)
-						PumpOutCell(b, b.targetOrgan);
+						PumpOutCell(b, b.TargetOrgan);
 					break;
 				case MovementType.GatherAtOrgan:
 					if (b.CurrentEnergy == b.MaxEnergy)
@@ -62,6 +62,10 @@ public class Organ : Vessel {
 		b.SetTarget(this, target);
 		BCellExit(b);
 		GetImmediateVesselTo(b.nextTarget).BCellEnter(b);
+	}
+
+	public virtual void OnRequestCell(BCell b) {
+		b.TargetOrgan = this;
 	}
 
 	public override void BCellEnter(BCell b) {

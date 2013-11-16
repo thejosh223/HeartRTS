@@ -36,13 +36,17 @@ public class Heart : Organ {
 		// Starting Cells
 		for (int i = 0; i < 10; i++) {
 			BCell b = new BCell();
-			b.targetOrgan = null;
+			b.TargetOrgan = null;
 
 			BCellEnter(new BCell());
 		}
 
 		// Start the heart
 		StartBeating();
+	}
+
+	void OnGUI() {
+		GUI.Box(new Rect(0, 0, 200, 50), "Energy: " + energy);
 	}
 
 	protected override void Update() {
@@ -110,15 +114,13 @@ public class Heart : Organ {
 		}
 	}
 
-	public void TargetCell(Organ org) {
+	public BCell GetIdleCell() {
 		for (int i = 0; i < currentCells.Count; i++) {
-			if (currentCells[i].targetOrgan == null) {
-				currentCells[i].MovementMode = MovementType.GatherAtHeart;
-				currentCells[i].targetOrgan = org;
-
-				return;
+			if (currentCells[i].TargetOrgan == null) {
+				return currentCells[i];
 			}
 		}
+		return null;
 	}
 
 	/*
