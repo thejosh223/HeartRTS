@@ -16,6 +16,10 @@ public class BuildController : MonoBehaviour {
 	private Color activeColor = new Color(109 / 255f, 194 / 255f, 255 / 255f);
 	private Color inactiveColor = new Color(255 / 255f, 131 / 255f, 119 / 255f);
 
+	void Awake() {
+		_instance = this;
+	}
+
 	void Start() {
 		xyZeroPlane = new Plane(Vector3.forward, Vector3.zero);
 
@@ -119,6 +123,10 @@ public class BuildController : MonoBehaviour {
 
 				// TEST!!!
 				if (dist <= minBuildRadius) {
+					if (_sourceVessel is Organ) {
+						GUICamController.Instance.OpenOrganMenu((Organ)_sourceVessel);
+					}
+
 					if (_sourceVessel is Organ && _sourceVessel != Heart.Instance) {
 						// Target the Organ
 						BCell b = Heart.Instance.GetIdleCell();

@@ -1,11 +1,13 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Organs\Organ.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Controllers\GUICamController.cs">
     <Files>
-      <File FileName="Assets\Scripts\Organs\Organ.cs" Line="32" Column="11" />
-      <File FileName="Assets\Scripts\Cells\BCell.cs" Line="11" Column="42" />
-      <File FileName="Assets\Scripts\Heart.cs" Line="105" Column="45" />
-      <File FileName="Assets\Scripts\Organs\Liver.cs" Line="10" Column="44" />
+      <File FileName="Assets\Scripts\Controllers\GUICamController.cs" Line="23" Column="3" />
+      <File FileName="Assets\Scripts\Organs\Organ.cs" Line="16" Column="30" />
+      <File FileName="Assets\Scripts\Cells\BCell.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Heart.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Organs\Liver.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Controllers\BuildController.cs" Line="131" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
