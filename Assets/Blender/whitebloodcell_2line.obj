@@ -1,6 +1,6 @@
 # Blender v2.69 (sub 0) OBJ File: 'whitebloodcell_2line.blend'
 # www.blender.org
-mtllib whitebloodcell_2lines.mtl
+mtllib whitebloodcell_2line.mtl
 o Sphere
 v -0.431043 0.248250 -0.127670
 v -0.491516 -0.189255 -0.075483
