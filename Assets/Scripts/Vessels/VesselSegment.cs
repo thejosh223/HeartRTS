@@ -9,6 +9,9 @@ public class VesselSegment : VesselContainer {
 		// Rotate based off of 2 attached segments
 		Vector3 v = attachedNodes[0].node.transform.position - attachedNodes[1].node.transform.position;
 		transform.rotation = Quaternion.LookRotation(v);
+
+		// Disable
+		gameObject.SetActive(false);
 	}
 
 	/*

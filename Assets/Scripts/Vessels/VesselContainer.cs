@@ -10,6 +10,8 @@ public class VesselContainer : Vessel {
 	private Vector3 baseScale;
 	
 	protected override void Start() {
+		base.Start();
+
 		// Base Values
 		baseScale = transform.localScale;
 	}
@@ -25,14 +27,14 @@ public class VesselContainer : Vessel {
 		
 		float tweenTime = 1f / Heart.Instance.heartPressure;
 		LeanTween.scale(gameObject, baseScale * 1.5f, tweenTime, 
-				new object[] { "ease", LeanTweenType.easeOutElastic });
+				new object[] { "ease", LeanTweenType.easeOutBack });
 		StartCoroutine(CallCellExit(b, tweenTime));
 	}
 	
 	public override void BCellExit(BCell b) {
 		base.BCellExit(b);
 		LeanTween.scale(gameObject, baseScale, 1f / Heart.Instance.heartPressure,
-				new object[] { "ease", LeanTweenType.easeOutElastic });
+		                new object[] { "ease", LeanTweenType.easeOutBack });
 	}
 
 	private IEnumerator CallCellExit(BCell b, float delay) {
