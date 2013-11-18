@@ -34,6 +34,10 @@ public class GUICamController : MonoBehaviour {
 		_activeOrgan = org;
 	}
 
+	public bool IsOpen() {
+		return _activeOrgan != null;
+	}
+
 	/*
 	 * Singleton
 	 */

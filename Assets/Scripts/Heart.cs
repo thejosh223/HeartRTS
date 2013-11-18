@@ -35,9 +35,7 @@ public class Heart : Organ {
 
 		// Starting Cells
 		for (int i = 0; i < 10; i++) {
-			BCell b = new BCell();
-			b.TargetOrgan = null;
-
+			BCell b = CellController.Instance.InstantiateNew();
 			BCellEnter(new BCell());
 		}
 
