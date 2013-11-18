@@ -127,13 +127,13 @@ public class BuildController : MonoBehaviour {
 						GUICamController.Instance.OpenOrganMenu((Organ)_sourceVessel);
 					}
 
-					if (_sourceVessel is Organ && _sourceVessel != Heart.Instance) {
-						// Target the Organ
-						BCell b = Heart.Instance.GetIdleCell();
-						if (b != null) {
-							((Organ)_sourceVessel).OnRequestCell(b);
-						}
-					}
+//					if (_sourceVessel is Organ && _sourceVessel != Heart.Instance) {
+//						// Target the Organ
+//						BCell b = Heart.Instance.GetIdleCell();
+//						if (b != null) {
+//							((Organ)_sourceVessel).OnRequestCell(b);
+//						}
+//					}
 				}
 			} 
 

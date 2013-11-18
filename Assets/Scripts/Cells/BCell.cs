@@ -10,6 +10,7 @@ public class BCell {
 	public Vessel currentVessel;
 	
 	//
+	public Organ waypointedOrgan;
 	public Organ _targetOrgan;
 	private float _carryingEnergy;
 	private float _maxEnergy = 10f;
@@ -27,11 +28,6 @@ public class BCell {
 		}
 		if (v == nextTarget) 
 			nextTarget = SearchNextTarget();
-
-		// Other
-		if (v is Organ) {
-			_targetOrgan = (Organ)v;
-		}
 	}
 
 	/*

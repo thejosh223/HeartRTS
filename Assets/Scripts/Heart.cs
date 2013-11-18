@@ -34,9 +34,8 @@ public class Heart : Organ {
 		energy = STARTING_ENERGY;
 
 		// Starting Cells
-		for (int i = 0; i < 10; i++) {
-			BCell b = CellController.Instance.InstantiateNew();
-			BCellEnter(new BCell());
+		for (int i = 0; i < 6; i++) {
+			BCellEnter(CellController.Instance.InstantiateNew());
 		}
 
 		// Start the heart

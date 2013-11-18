@@ -3,7 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Organ : Vessel {
-
+	
+	public const int MAX_CELLS = 8;
 	public const float ENERGY_TRANSFER_RATE = 10f;
 
 	//
