@@ -5,10 +5,10 @@ using System.Collections.Generic;
 public class UnitsMenu : MonoBehaviour {
 
 	protected Organ _activeOrgan;
-	protected BCell[] _cells;
 	protected GameObject[] unitObjects;
 
 	//
+	protected List<BCell> _cells = new List<BCell>();
 	protected List<BCell> _selectedCells = new List<BCell>();
 
 	void Start() {
@@ -30,14 +30,23 @@ public class UnitsMenu : MonoBehaviour {
 		Destroy(g);
 	}
 
+	public void SendUnitsTo(Organ org) {
+		for (int i = 0; i < _selectedCells.Count; i++) {
+			org.OnRequestCell(_selectedCells[i]);
+		}
+		_selectedCells.Clear();
+	}
+
 	public void HitObject(GameObject g) {
 		if (g != null) {
 			for (int i = 0; i < unitObjects.Length; i++) {
 				if (unitObjects[i] == g) {
 					_selectedCells.Add(_cells[i]);
+					_cells.Remove(_cells[i]);
 				}
 			}
 		}
+		UpdateUI();
 	}
 
 	public void SetOrgan(Organ org) {
@@ -45,13 +54,14 @@ public class UnitsMenu : MonoBehaviour {
 
 		_activeOrgan = org;
 		_cells = CellController.Instance.GetCellsAt(org);
+		_selectedCells.Clear();
 		UpdateUI();
 	}
 
 	public void UpdateUI() {
 		for (int i = 0; i < unitObjects.Length; i++) 
 			unitObjects[i].SetActive(false);
-		for (int i = 0; i < _cells.Length; i++) 
+		for (int i = 0; i < _cells.Count; i++) 
 			unitObjects[i].SetActive(true);
 	}
 }

@@ -1,11 +1,16 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Controllers\UnitsMenu.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Organs\LungCell.cs">
     <Files>
+      <File FileName="Assets\Scripts\Controllers\GUICamController.cs" Line="44" Column="27" />
+      <File FileName="Assets\Scripts\Controllers\UnitsMenu.cs" Line="50" Column="3" />
       <File FileName="Assets\Scripts\Controllers\CellController.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Controllers\UnitsMenu.cs" Line="36" Column="31" />
       <File FileName="Assets\Scripts\Controllers\BuildController.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Controllers\GUICamController.cs" Line="32" Column="26" />
+      <File FileName="Assets\Scripts\Controllers\GameController.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Cells\BCell.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Organs\Organ.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Organs\Lymphnode.cs" Line="4" Column="1" />
+      <File FileName="Assets\Scripts\Organs\LungCell.cs" Line="4" Column="22" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

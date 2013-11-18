@@ -17,7 +17,7 @@ public class CellController : MonoBehaviour {
 		return b;
 	}
 
-	public BCell[] GetCellsAt(Organ org) {
+	public List<BCell> GetCellsAt(Organ org) {
 		if (org == Heart.Instance)
 			org = null;
 
@@ -27,7 +27,7 @@ public class CellController : MonoBehaviour {
 				l.Add(cells[i]);
 			}
 		}
-		return l.ToArray();
+		return l;
 	}
 
 	/*

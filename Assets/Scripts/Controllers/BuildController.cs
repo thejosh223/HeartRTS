@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 public class BuildController : MonoBehaviour {
 
+	public bool isBuildMode = true;
+
+	//
 	protected float minBuildRadius = 2f;
 	protected float buildRadius = 8f;
 	private Vessel _sourceVessel;
@@ -28,6 +31,9 @@ public class BuildController : MonoBehaviour {
 	}
 	
 	void Update() {
+		if (!isBuildMode)
+			return;
+
 		if (Input.GetMouseButton(0)) {
 			if (Input.GetMouseButtonDown(0)) {
 				// Raycast
@@ -121,19 +127,10 @@ public class BuildController : MonoBehaviour {
 					}
 				}
 
-				// TEST!!!
 				if (dist <= minBuildRadius) {
 					if (_sourceVessel is Organ) {
 						GUICamController.Instance.OpenOrganMenu((Organ)_sourceVessel);
 					}
-
-//					if (_sourceVessel is Organ && _sourceVessel != Heart.Instance) {
-//						// Target the Organ
-//						BCell b = Heart.Instance.GetIdleCell();
-//						if (b != null) {
-//							((Organ)_sourceVessel).OnRequestCell(b);
-//						}
-//					}
 				}
 			} 
 
