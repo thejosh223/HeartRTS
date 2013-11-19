@@ -8,7 +8,7 @@ public class BuildController : MonoBehaviour {
 
 	//
 	protected float minBuildRadius = 2f;
-	protected float buildRadius = 8f;
+	protected float buildRadius = 8f; // TODO: Set this to 6f
 	private Vessel _sourceVessel;
 	protected Plane xyZeroPlane;
 

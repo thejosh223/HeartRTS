@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class Vessel : MonoBehaviour {
 
+	public static int VESSELCOUNTER = 0;
+
 	// Graph
 	protected List<VesselConnection> attachedNodes = new List<VesselConnection>();
 
@@ -60,6 +62,7 @@ public class Vessel : MonoBehaviour {
 				new Vector3(prevPos.x + deltaX * i + deltaX / 2, prevPos.y + deltaY * i + deltaY / 2, 0), //
 				Quaternion.identity) as GameObject;
 			g.transform.parent = transform.parent;
+			g.name = "Segment: " + (VESSELCOUNTER++);
 			VesselSegment v2 = g.GetComponent<VesselSegment>();
 
 			// point current segment (newly instantiated) backward

@@ -4,8 +4,8 @@ using System.Collections.Generic;
 
 public class VesselEndpoint : VesselContainer {
 	
-	private static float SEGMENT_BUILDTIME = 0.0625f;
-//	private static float SEGMENT_BUILDTIME = 0.25f;
+//	private static float SEGMENT_BUILDTIME = 0.0625f;
+	private static float SEGMENT_BUILDTIME = 0f;
 	private bool _isBuilding = true;
 	private float _lastBuildTime;
 	Vessel[] segmentList;
@@ -20,7 +20,7 @@ public class VesselEndpoint : VesselContainer {
 		// Start building!
 		segmentList = new Vessel[attachedNodes.Count];
 		for (int i = 0; i < attachedNodes.Count; i++) 
-			segmentList[i] = attachedNodes[i].node.GetImmediateVesselTo(this);
+			segmentList[i] = attachedNodes[i].node;
 
 		_lastBuildTime = Time.time;
 	}

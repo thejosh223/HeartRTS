@@ -6,6 +6,7 @@ public enum MovementType {
 	DepositAtHeart,
 	DepositAtOrgan,
 	GatherAtHeart,
-	GatherAtOrgan
+	GatherAtOrgan,
+	StayAtOrgan
 
 }
