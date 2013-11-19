@@ -1,16 +1,11 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Organs\Liver (copy).cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Controllers\GUICamController.cs">
     <Files>
-      <File FileName="Assets\Scripts\Vessels\VesselSegment.cs" Line="25" Column="2" />
-      <File FileName="Assets\Scripts\Vessels\VesselContainer.cs" Line="27" Column="3" />
-      <File FileName="Assets\Scripts\Vessels\VesselEndpoint.cs" Line="38" Column="23" />
-      <File FileName="Assets\Scripts\Vessels\Vessel.cs" Line="65" Column="28" />
-      <File FileName="Assets\Scripts\Controllers\BuildController.cs" Line="11" Column="59" />
-      <File FileName="Assets\Scripts\Heart.cs" Line="26" Column="2" />
-      <File FileName="Assets\Scripts\Cells\BCell.cs" Line="9" Column="27" />
-      <File FileName="Assets\Scripts\Cells\MovementType.cs" Line="10" Column="13" />
-      <File FileName="Assets\Scripts\Organs\Liver (copy).cs" Line="14" Column="19" />
+      <File FileName="Assets\Scripts\Controllers\OrganUnitsMenu.cs" Line="29" Column="2" />
+      <File FileName="Assets\Scripts\Controllers\GUICamController.cs" Line="118" Column="3" />
+      <File FileName="Assets\Scripts\Controllers\SelectedUnitsMenu.cs" Line="9" Column="16" />
+      <File FileName="Assets\Scripts\Controllers\BuildController.cs" Line="11" Column="54" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
