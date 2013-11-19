@@ -29,7 +29,8 @@ public class GUICamController : MonoBehaviour {
 		_selUnitsMenu = transform.FindChild("SelectedUnitsMenu").GetComponent<SelectedUnitsMenu>();
 	}
 
-	void Update() {
+	// Note: LateUpdate() is used so that BuildMode isnt set as TRUE when BuildController.Update() is called.
+	void LateUpdate() {
 		if (GUICamController.Instance.IsOpen()) {
 			if (Input.GetMouseButtonDown(0)) {
 				// Raycast
@@ -44,7 +45,7 @@ public class GUICamController : MonoBehaviour {
 
 						// Open selected menu
 						if (_selectedCells.Count == 0) 
-							SetSelectedUnitsMenu(true);
+							_selUnitsMenu.gameObject.SetActive(true);
 
 						_selectedCells.Add(_cells[index]);
 						_cells.Remove(_cells[index]);
@@ -59,7 +60,8 @@ public class GUICamController : MonoBehaviour {
 
 						// Close selected menu
 						if (_selectedCells.Count == 0) 
-							SetSelectedUnitsMenu(false);
+							_selUnitsMenu.gameObject.SetActive(false);
+
 						_organUnitsMenu.UpdateUI(_cells.ToArray());
 						_selUnitsMenu.UpdateUI(_selectedCells.ToArray());
 					} else if (name.StartsWith("ExitMenu")) {
@@ -87,15 +89,17 @@ public class GUICamController : MonoBehaviour {
 						if (_selectedCells.Count > 0) 
 							keepOpen = true;
 					}
-
+					
 					if (keepOpen) {
 						// 1) Close OrganUnitsMenu()
+						_organUnitsMenu.gameObject.SetActive(false);
 						// 2) Don't Close SelectedUnitsMenu()
-
 					} else {
 						// Close Menu
-						SetUnitsMenu(false);
-						SetSelectedUnitsMenu(false);
+						_organUnitsMenu.gameObject.SetActive(false);
+						_selUnitsMenu.gameObject.SetActive(false);
+						
+						BuildController.Instance.isBuildMode = true;
 					}
 				}
 			}
@@ -107,7 +111,7 @@ public class GUICamController : MonoBehaviour {
 			}
 		}
 	}
-	
+
 	public void SendUnitsTo(Organ org) {
 		for (int i = 0; i < _selectedCells.Count; i++) 
 			org.OnRequestCell(_selectedCells[i]);
@@ -115,28 +119,17 @@ public class GUICamController : MonoBehaviour {
 	}
 
 	public void OpenOrganMenu(Organ org) {
+		BuildController.Instance.isBuildMode = false;
+
 		_activeOrgan = org;
 		_cells = CellController.Instance.GetCellsAt(org);
 		_selectedCells.Clear();
-
-		BCell[] b = _cells.ToArray();
-		Debug.Log("Cells: " + b.Length);
 
 		if (org != null) {
 			_organUnitsMenu.gameObject.SetActive(true);
 			_organUnitsMenu.UpdateUI(_cells.ToArray());
 		} else {
 		}
-	}
-
-	public void SetUnitsMenu(bool b) {
-		_organUnitsMenu.gameObject.SetActive(b);
-		BuildController.Instance.isBuildMode = !b;
-	}
-
-	public void SetSelectedUnitsMenu(bool b) {
-		_selUnitsMenu.gameObject.SetActive(b);
-		BuildController.Instance.isBuildMode = !b;
 	}
 
 	public bool IsOpen() {

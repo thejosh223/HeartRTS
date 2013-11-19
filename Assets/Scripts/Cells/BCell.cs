@@ -10,6 +10,7 @@ public class BCell {
 	public Vessel currentVessel;
 	
 	//
+	public OrganPath organPath;
 	public Organ waypointedOrgan;
 	public Organ _targetOrgan;
 	private float _carryingEnergy;
@@ -17,6 +18,7 @@ public class BCell {
 	public MovementType _movementMode;
 
 	public BCell () {
+		organPath = new OrganPath(this);
 	}
 
 	public void OnVesselEnter(Vessel v) {
