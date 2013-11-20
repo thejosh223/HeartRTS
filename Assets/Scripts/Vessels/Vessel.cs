@@ -92,6 +92,7 @@ public class Vessel : MonoBehaviour {
 	 * -call this when you want a cell to enter/exit the vessel
 	 */
 	public virtual void BCellEnter(BCell b) {
+		b.OnVesselEnter(this);
 	}
 
 	public virtual void BCellExit(BCell b) {

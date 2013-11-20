@@ -16,64 +16,63 @@ public class Organ : Vessel {
 		for (int i = 0; i < currentCells.Count; i++) {
 			BCell b = currentCells[i];
 
-			if (b.TargetOrgan == null)
-				continue;
+			if (b.finalTarget != null) {
+				if (b.finalTarget == this) {
+					float energyTransfer = 0;
+					switch (b.MovementMode) {
+						case MovementType.Deposit:
+							energyTransfer = Mathf.Min(currentCells[i].CurrentEnergy, Time.deltaTime * ENERGY_TRANSFER_RATE);
+							currentCells[i].CurrentEnergy -= energyTransfer;
+							energy += energyTransfer * currentCells[i].energyMultiplier;
 
-			float energyTransfer = 0;
-			switch (b.MovementMode) {
-				case MovementType.DepositAtHeart:
-					energyTransfer = Mathf.Min(currentCells[i].CurrentEnergy, Time.deltaTime * ENERGY_TRANSFER_RATE);
-					break;
-				case MovementType.DepositAtOrgan:
-					energyTransfer = Mathf.Min(currentCells[i].CurrentEnergy, Time.deltaTime * ENERGY_TRANSFER_RATE);
-					break;
-				case MovementType.GatherAtHeart:
-					energyTransfer = -Mathf.Min(currentCells[i].MaxEnergy - currentCells[i].CurrentEnergy, Time.deltaTime * ENERGY_TRANSFER_RATE);
-					break;
-				case MovementType.GatherAtOrgan:
-					energyTransfer = -Mathf.Min(currentCells[i].MaxEnergy - currentCells[i].CurrentEnergy, Time.deltaTime * ENERGY_TRANSFER_RATE);
-					break;
-			}
+							if (currentCells[i].CurrentEnergy == 0) {
+								currentCells[i].energyMultiplier = 1f;
+								PumpOutCell(currentCells[i]);
+							}
+							break;
+						case MovementType.Gather:
+							energyTransfer = -Mathf.Min(currentCells[i].MaxEnergy - currentCells[i].CurrentEnergy, Time.deltaTime * ENERGY_TRANSFER_RATE);
+							currentCells[i].CurrentEnergy -= energyTransfer;
+							energy += energyTransfer;
 
-			currentCells[i].CurrentEnergy -= energyTransfer;
-			energy += energyTransfer;
-
-			switch (b.MovementMode) {
-				case MovementType.DepositAtHeart:
-					if (b.CurrentEnergy == 0)
-						PumpOutCell(b, b.TargetOrgan);
-					break;
-				case MovementType.DepositAtOrgan:
-					if (b.CurrentEnergy == 0)
-						PumpOutCell(b, Heart.Instance);
-					break;
-				case MovementType.GatherAtHeart:
-					if (b.CurrentEnergy == b.MaxEnergy)
-						PumpOutCell(b, b.TargetOrgan);
-					break;
-				case MovementType.GatherAtOrgan:
-					if (b.CurrentEnergy == b.MaxEnergy)
-						PumpOutCell(b, Heart.Instance);
-					break;
+							if (currentCells[i].CurrentEnergy == currentCells[i].MaxEnergy) 
+								PumpOutCell(currentCells[i]);
+							break;
+						case MovementType.Wait:
+							MovementTypeCall(currentCells[i], MovementType.Wait);
+							break;
+					}
+				} else {
+					PumpOutCell(currentCells[i]);
+				}
 			}
 		}
 	}
 
-	public virtual void PumpOutCell(BCell b, Organ target) {
-		b.SetTarget(this, target);
-		BCellExit(b);
-		GetImmediateVesselTo(b.nextTarget).BCellEnter(b);
+	protected virtual void MovementTypeCall(BCell b, MovementType mov) {
 	}
 
-	public virtual void OnRequestCell(BCell b) {
-		b.TargetOrgan = this;
+	public void PumpOutCell(BCell b) {
+		if (b.finalTarget == this) {
+			b.ExecutePath();
+		}
+		BCellExit(b);
+
+		Vessel v = GetImmediateVesselTo(b.nextTarget);
+		v.BCellEnter(b);
+	}
+
+	public virtual MovementType GetDefaultBehaviour() {
+		return MovementType.Deposit;
 	}
 
 	public override void BCellEnter(BCell b) {
+		base.BCellEnter(b);
 		currentCells.Add(b);
 	}
 	
 	public override void BCellExit(BCell b) {
+		base.BCellExit(b);
 		currentCells.Remove(b);
 	}
 }

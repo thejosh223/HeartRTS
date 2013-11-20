@@ -12,7 +12,6 @@ public class CellController : MonoBehaviour {
 
 	public BCell InstantiateNew() {
 		BCell b = new BCell();
-		b.TargetOrgan = null;
 		cells.Add(b);
 		return b;
 	}
@@ -23,8 +22,18 @@ public class CellController : MonoBehaviour {
 
 		List<BCell> l = new List<BCell>();
 		for (int i = 0; i < cells.Count; i++) {
-			if (cells[i].TargetOrgan == org) {
-				l.Add(cells[i]);
+			NodeAction[] actions = cells[i].organPath.path.ToArray();
+
+			if (actions.Length == 0) {
+				if (org == null) {
+					l.Add(cells[i]);
+				}
+			} else {
+				for (int o = 0; o < actions.Length; o++) {
+					if (actions[o].org == org) {
+						l.Add(cells[i]);
+					}
+				}
 			}
 		}
 		return l;

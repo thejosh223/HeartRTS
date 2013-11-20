@@ -35,7 +35,9 @@ public class Heart : Organ {
 
 		// Starting Cells
 		for (int i = 0; i < 6; i++) {
-			BCellEnter(CellController.Instance.InstantiateNew());
+			BCell b = CellController.Instance.InstantiateNew();
+			b.currentVessel = this;
+			BCellEnter(b);
 		}
 
 		// Start the heart
@@ -86,38 +88,6 @@ public class Heart : Organ {
 	}
 
 	private void PumpBlood() {
-//		for (int i = 0; i < currentCells.Count; i++) {
-//			if (currentCells[i].targetOrgan != null) {
-//				if (BCell.HasPathTo(this, currentCells[i].targetOrgan))
-//					PumpOutCell(currentCells[i], currentCells[i].targetOrgan);
-//			}
-//		}
-	}
-
-	public override void PumpOutCell(BCell b, Organ target) {
-		base.PumpOutCell(b, target);
-
-		// Set Behaviour			
-		switch (b.MovementMode) {
-			case MovementType.DepositAtHeart:
-				b.MovementMode = MovementType.GatherAtOrgan;
-				break;
-			case MovementType.GatherAtHeart:
-				b.MovementMode = MovementType.DepositAtOrgan;
-				break;
-			default:
-				Debug.LogError("It Defaulted! This should not happen.");
-				break;
-		}
-	}
-
-	public BCell GetIdleCell() {
-		for (int i = 0; i < currentCells.Count; i++) {
-			if (currentCells[i].TargetOrgan == null) {
-				return currentCells[i];
-			}
-		}
-		return null;
 	}
 
 	/*

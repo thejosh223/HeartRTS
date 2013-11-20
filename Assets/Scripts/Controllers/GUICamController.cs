@@ -16,6 +16,7 @@ public class GUICamController : MonoBehaviour {
 	//
 	protected List<BCell> _selectedCells = new List<BCell>();
 	protected List<BCell> _cells = new List<BCell>();
+	protected OrganPath _path = new OrganPath(null);
 
 	void Awake() {
 		_instance = this;
@@ -65,7 +66,16 @@ public class GUICamController : MonoBehaviour {
 						_organUnitsMenu.UpdateUI(_cells.ToArray());
 						_selUnitsMenu.UpdateUI(_selectedCells.ToArray());
 					} else if (name.StartsWith("ExitMenu")) {
+						_organUnitsMenu.gameObject.SetActive(false);
+						_selUnitsMenu.gameObject.SetActive(false);
+						BuildController.Instance.isBuildMode = true;
+					} else if (name.StartsWith("AcceptWaypoints")) {
+						SendUnitsToPath();
 
+						// Close Menu
+						_organUnitsMenu.gameObject.SetActive(false);
+						_selUnitsMenu.gameObject.SetActive(false);
+						BuildController.Instance.isBuildMode = true;
 					}
 				} else {
 					bool keepOpen = false;
@@ -76,8 +86,11 @@ public class GUICamController : MonoBehaviour {
 
 						if (org != null) {
 							if (org != _activeOrgan && org != Heart.Instance) {
-								if (BCell.HasPathTo(Heart.Instance, org)) 
-									SendUnitsTo(org);
+								if (BCell.HasPathTo(Heart.Instance, org)) {
+									_path.AddOrgan(org, org.GetDefaultBehaviour());
+									keepOpen = true;
+								} else {
+								}
 							}
 						} else {
 							// Hit Vessel
@@ -98,7 +111,6 @@ public class GUICamController : MonoBehaviour {
 						// Close Menu
 						_organUnitsMenu.gameObject.SetActive(false);
 						_selUnitsMenu.gameObject.SetActive(false);
-						
 						BuildController.Instance.isBuildMode = true;
 					}
 				}
@@ -112,9 +124,14 @@ public class GUICamController : MonoBehaviour {
 		}
 	}
 
-	public void SendUnitsTo(Organ org) {
-		for (int i = 0; i < _selectedCells.Count; i++) 
-			org.OnRequestCell(_selectedCells[i]);
+	public void SendUnitsToPath() {
+		for (int i = 0; i < _selectedCells.Count; i++) {
+			_selectedCells[i].organPath.Reset();
+			for (int o = 0; o < _path.path.Count; o++) 
+				_selectedCells[i].organPath.AddOrgan(_path.path[o].org, _path.path[o].movementType);
+			if (_selectedCells[i].organPath.FinalizePath())
+				_selectedCells[i].ExecutePath();
+		}
 		_selectedCells.Clear();
 	}
 
@@ -124,6 +141,7 @@ public class GUICamController : MonoBehaviour {
 		_activeOrgan = org;
 		_cells = CellController.Instance.GetCellsAt(org);
 		_selectedCells.Clear();
+		_path.Reset();
 
 		if (org != null) {
 			_organUnitsMenu.gameObject.SetActive(true);
