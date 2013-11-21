@@ -4,9 +4,10 @@ using System.Collections.Generic;
 
 public class BuildController : MonoBehaviour {
 
-	public bool isBuildMode = true;
+	public const float SNAP_RADIUS = 1f;
 
 	//
+	public bool isBuildMode = true;
 	protected float minBuildRadius = 2f;
 	protected float buildRadius = 8f; // TODO: Set this to 6f
 	private Vessel _sourceVessel;
@@ -54,7 +55,13 @@ public class BuildController : MonoBehaviour {
 				Vector3 v = RaycastXYPlane(Input.mousePosition);
 				float dist = Vector3.Distance(v, _sourceVessel.transform.position);
 
-				if (dist <= buildRadius && dist >= minBuildRadius) {
+				// Spherecast
+				Vessel snapToVessel = ClosestVessel(v, SNAP_RADIUS);
+
+				if (dist <= buildRadius) {
+					if (snapToVessel != null) 
+						v = snapToVessel.transform.position;
+
 					radiusIdentifier.renderer.material.color = activeColor;
 					for (int i = 0; i < radiusLineRenderers.Count; i++) {
 						radiusLineRenderers[i].r.SetPosition(1, v - Vector3.forward * LINE_RENDERER_OFFSET);
@@ -78,17 +85,24 @@ public class BuildController : MonoBehaviour {
 				if (dist <= buildRadius) {
 					if (Heart.Instance.energy >= Vessel.VESSELSEGMENT_COST) {
 						Vessel hitVessel = null;
-
 						Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 						RaycastHit hit;
 						if (Physics.Raycast(ray, out hit, Mathf.Infinity)) 
 							hitVessel = hit.transform.GetComponent<Vessel>();
 
-						if (hitVessel != _sourceVessel) {
-							if (hitVessel != null) {
+						if (hitVessel != null) {
+							
+							if (hitVessel != _sourceVessel) {
 								// Vessel or Organ Hit
 								// -No need to instantiate.
 								hitVessel.AttachVessel(_sourceVessel);
+								OnBuild();
+							}
+						} else {
+							Vessel snapToVessel = ClosestVessel(v, SNAP_RADIUS);
+
+							if (snapToVessel != null) {
+								snapToVessel.AttachVessel(_sourceVessel);
 								OnBuild();
 							} else {
 								// Nothing Hit.
@@ -142,6 +156,26 @@ public class BuildController : MonoBehaviour {
 		VesselEndpoint v = g.GetComponent<VesselEndpoint>();
 		v.name = "VesselEndpoint_" + GameController.vesselCounter++;
 		return v;
+	}
+
+	/*
+	 * Casting Functions
+	 */
+	protected Vessel ClosestVessel(Vector3 v, float radius) {
+		Collider[] c = Physics.OverlapSphere(v, radius);
+		Vessel minVessel = null;
+		float minDist = Mathf.Infinity;
+		for (int i = 0; i < c.Length; i++) {
+			Vessel ves = c[i].GetComponent<Vessel>();
+			if (ves != null) {
+				float dist = Vector3.Distance(ves.transform.position, v);
+				if (dist < minDist) {
+					minVessel = ves;
+					minDist = dist;
+				}
+			}
+		}
+		return minVessel;
 	}
 
 	protected RaycastHit Raycast(Vector3 v) {

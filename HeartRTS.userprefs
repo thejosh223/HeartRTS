@@ -1,23 +1,15 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Controllers\GUICamController.cs">
-    <Files>
-      <File FileName="Assets\Scripts\Organs\LungCell.cs" Line="36" Column="74" />
-      <File FileName="Assets\Scripts\Organs\Organ.cs" Line="86" Column="17" />
-      <File FileName="Assets\Scripts\Controllers\GameController.cs" Line="31" Column="3" />
-      <File FileName="Assets\Scripts\Util\Bar.cs" Line="27" Column="12" />
-      <File FileName="Assets\Scripts\Controllers\GUICamController.cs" Line="75" Column="54" />
-      <File FileName="Assets\Scripts\Heart.cs" Line="40" Column="7" />
-    </Files>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.Workbench>
     <Pads>
       <Pad Id="ProjectPad">
         <State expanded="True">
           <Node name="Assembly-CSharp" expanded="True">
             <Node name="Scripts" expanded="True">
-              <Node name="Cells" expanded="True" />
-              <Node name="Controllers" expanded="True">
-                <Node name="GUICamController.cs" selected="True" />
+              <Node name="Cells" expanded="True">
+                <Node name="BCell.cs" selected="True" />
               </Node>
+              <Node name="Controllers" expanded="True" />
               <Node name="Organs" expanded="True" />
               <Node name="Util" expanded="True" />
               <Node name="Vessels" expanded="True" />
