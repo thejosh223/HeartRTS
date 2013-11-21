@@ -56,10 +56,14 @@ public class BuildController : MonoBehaviour {
 
 				if (dist <= buildRadius && dist >= minBuildRadius) {
 					radiusIdentifier.renderer.material.color = activeColor;
-					for (int i = 0; i < radiusLineRenderers.Count; i++) 
+					for (int i = 0; i < radiusLineRenderers.Count; i++) {
 						radiusLineRenderers[i].r.SetPosition(1, v - Vector3.forward * LINE_RENDERER_OFFSET);
+						radiusLineRenderers[i].r.enabled = true;
+					}
 				} else {
 					radiusIdentifier.renderer.material.color = inactiveColor;
+					for (int i = 0; i < radiusLineRenderers.Count; i++)
+						radiusLineRenderers[i].r.enabled = false;
 				}
 			}
 		}

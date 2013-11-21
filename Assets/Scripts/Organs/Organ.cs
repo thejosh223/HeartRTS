@@ -20,54 +20,51 @@ public class Organ : Vessel {
 			BCell b = currentCells[i];
 
 			if (b.finalTarget != null) {
-				if (b.finalTarget == this) {
-					float energyTransfer = 0;
-					switch (b.MovementMode) {
-						case MovementType.Deposit:
-							energyTransfer = Mathf.Min(currentCells[i].CurrentEnergy, Time.deltaTime * ENERGY_TRANSFER_RATE);
-							currentCells[i].CurrentEnergy -= energyTransfer;
-							energy += energyTransfer * currentCells[i].energyMultiplier;
-
-							if (currentCells[i].CurrentEnergy == 0) {
-								currentCells[i].energyMultiplier = 1f;
-								QueuePumpOutCell(currentCells[i]);
-							}
-							break;
-						case MovementType.Gather:
-							energyTransfer = -Mathf.Min(currentCells[i].MaxEnergy - currentCells[i].CurrentEnergy, Time.deltaTime * ENERGY_TRANSFER_RATE);
-							currentCells[i].CurrentEnergy -= energyTransfer;
-							energy += energyTransfer;
-
-							if (currentCells[i].CurrentEnergy == currentCells[i].MaxEnergy) {
-								QueuePumpOutCell(currentCells[i]);
-							}
-							break;
-						case MovementType.Wait:
-							MovementTypeCall(currentCells[i], MovementType.Wait);
-							break;
-					}
-				} else {
-					Debug.Log("final Target: " + b.finalTarget.name);
+				if (b.finalTarget == this) 
+					MovementTypeCall(currentCells[i], b.MovementMode);
+				else 
 					QueuePumpOutCell(currentCells[i]);
-				}
 			}
 		}
 	}
 
 	protected virtual void MovementTypeCall(BCell b, MovementType mov) {
+		float energyTransfer = 0;
+		switch (mov) {
+			case MovementType.Deposit:
+				energyTransfer = Mathf.Min(b.CurrentEnergy, Time.deltaTime * ENERGY_TRANSFER_RATE);
+				b.CurrentEnergy -= energyTransfer;
+				energy += energyTransfer * b.energyMultiplier;
+				
+				if (b.CurrentEnergy == 0) {
+					b.energyMultiplier = 1f;
+					QueuePumpOutCell(b);
+				}
+				break;
+			case MovementType.Gather:
+				energyTransfer = Mathf.Min(b.MaxEnergy - b.CurrentEnergy, Time.deltaTime * ENERGY_TRANSFER_RATE);
+				energyTransfer = Mathf.Min(energyTransfer, energy);
+				b.CurrentEnergy += energyTransfer;
+				energy -= energyTransfer;
+				
+				if (b.CurrentEnergy == b.MaxEnergy || energy == 0) {
+					QueuePumpOutCell(b);
+				}
+				break;
+			default:
+				break;
+		}
 	}
 
 	public void QueuePumpOutCell(BCell b) {
+		currentCells.Remove(b);
 		pumpOutQueue.Add(b);
 	}
 
 	public void OnHeartPump() {
-		Debug.Log("C: " + name + " > " + currentCells.Count);
-
 		if (pumpOutQueue.Count > 0) {
 			BCell b = pumpOutQueue[0];
 			pumpOutQueue.RemoveAt(0);
-			currentCells.Remove(b);
 			PumpOutCell(b);
 		}
 	}

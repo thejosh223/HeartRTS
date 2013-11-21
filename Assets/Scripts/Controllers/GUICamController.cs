@@ -18,6 +18,9 @@ public class GUICamController : MonoBehaviour {
 	protected List<BCell> _cells = new List<BCell>();
 	protected OrganPath _path = new OrganPath(null);
 
+	//
+	public GameObject barPrefab;
+
 	void Awake() {
 		_instance = this;
 	}
@@ -76,6 +79,15 @@ public class GUICamController : MonoBehaviour {
 						_organUnitsMenu.gameObject.SetActive(false);
 						_selUnitsMenu.gameObject.SetActive(false);
 						BuildController.Instance.isBuildMode = true;
+					} else if (name.StartsWith("bAddCell")) {
+						if (Heart.Instance.energy >= BCell.COST) {
+							BCell b = CellController.Instance.InstantiateNew();
+							Heart.Instance.BCellEnter(b);
+							_cells = CellController.Instance.GetCellsAt(_activeOrgan);
+							_organUnitsMenu.UpdateUI(_cells.ToArray());
+
+							Heart.Instance.energy -= BCell.COST;
+						}
 					}
 				} else {
 					bool keepOpen = false;
@@ -141,7 +153,9 @@ public class GUICamController : MonoBehaviour {
 		_activeOrgan = org;
 		_cells = CellController.Instance.GetCellsAt(org);
 		_selectedCells.Clear();
-		_path.Reset();
+		_path.path.Clear();
+
+		_organUnitsMenu.bAddCell.SetActive(org == Heart.Instance);
 
 		if (org != null) {
 			_organUnitsMenu.gameObject.SetActive(true);

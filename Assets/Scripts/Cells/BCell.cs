@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class BCell {
 
+	public const float COST = 100f;
+
 	// Movement Values (only for transit)
 	public Vessel finalTarget; // Final target organ
 	public Vessel nextTarget; // Next Immediate VesselEndpoint/Organ

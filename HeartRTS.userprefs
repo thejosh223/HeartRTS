@@ -1,15 +1,31 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Organs\Organ.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Controllers\GUICamController.cs">
     <Files>
-      <File FileName="Assets\Scripts\Vessels\Vessel.cs" Line="9" Column="4" />
-      <File FileName="Assets\Scripts\Vessels\VesselContainer.cs" Line="30" Column="1" />
-      <File FileName="Assets\Scripts\Vessels\VesselSegment.cs" Line="17" Column="1" />
-      <File FileName="Assets\Scripts\Vessels\VesselEndpoint.cs" Line="17" Column="45" />
-      <File FileName="Assets\Scripts\Heart.cs" Line="93" Column="23" />
-      <File FileName="Assets\Scripts\Organs\Organ.cs" Line="15" Column="1" />
-      <File FileName="Assets\Scripts\Controllers\GUICamController.cs" Line="131" Column="38" />
+      <File FileName="Assets\Scripts\Organs\LungCell.cs" Line="36" Column="74" />
+      <File FileName="Assets\Scripts\Organs\Organ.cs" Line="86" Column="17" />
+      <File FileName="Assets\Scripts\Controllers\GameController.cs" Line="31" Column="3" />
+      <File FileName="Assets\Scripts\Util\Bar.cs" Line="27" Column="12" />
+      <File FileName="Assets\Scripts\Controllers\GUICamController.cs" Line="75" Column="54" />
+      <File FileName="Assets\Scripts\Heart.cs" Line="40" Column="7" />
     </Files>
+    <Pads>
+      <Pad Id="ProjectPad">
+        <State expanded="True">
+          <Node name="Assembly-CSharp" expanded="True">
+            <Node name="Scripts" expanded="True">
+              <Node name="Cells" expanded="True" />
+              <Node name="Controllers" expanded="True">
+                <Node name="GUICamController.cs" selected="True" />
+              </Node>
+              <Node name="Organs" expanded="True" />
+              <Node name="Util" expanded="True" />
+              <Node name="Vessels" expanded="True" />
+            </Node>
+          </Node>
+        </State>
+      </Pad>
+    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />

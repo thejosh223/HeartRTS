@@ -15,7 +15,11 @@ public class Parallax : MonoBehaviour {
 		cam = Camera.main.transform;
 		previousCamPos = cam.position;
 
-		backgrounds = GetComponentsInChildren<Transform>();
+		Transform[] t = GetComponentsInChildren<Transform>();
+		backgrounds = new Transform[t.Length - 1];
+		for (int i = 0, o = 0; i < t.Length; i++) 
+			if (t[i] != this.transform)
+				backgrounds[o++] = t[i];
 	}
 	
 	void LateUpdate() {
@@ -23,9 +27,8 @@ public class Parallax : MonoBehaviour {
 
 		// For each successive background...
 		for (int i = 0; i < backgrounds.Length; i++) {
-			if (backgrounds[i].transform.position.z > 1)
-				continue;
-
+//			if (backgrounds[i].transform.localPosition.z > 1f)
+//				continue;
 			Vector3 bgTargetPos = backgrounds[i].position + parallax * (1f - backgrounds[i].localPosition.z);
 			backgrounds[i].position = Vector3.Lerp(backgrounds[i].position, bgTargetPos, smoothing * Time.deltaTime);
 		}

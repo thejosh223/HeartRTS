@@ -10,11 +10,6 @@ public class GameController : MonoBehaviour {
 	}
 
 	void Start() {
-//		GameObject g = Instantiate(Heart.Instance.vNodePrefab, new Vector3(Random.Range(6f, 8f), Random.Range(-2f, 2f), 0), Quaternion.identity) as GameObject;
-//		VesselEndpoint v = g.GetComponent<VesselEndpoint>();
-//		v.AttachVessel(Heart.Instance);
-//		v.name = "VesselEndpoint_" + vesselCounter++;
-//		TestInitFunction(v, RandomDelta(), true, 0);
 	}
 
 	private void TestInitFunction(Vessel v, Vector3 deltaPos, bool keepRecursion, int depth) {
