@@ -6,7 +6,7 @@ public class LineRendererPool : MonoBehaviour {
 	
 	private List<LineRenderer> _objects;
 	public LineRenderer objectPrefab;
-	public int instancesOfObjects = 5;
+	public int instancesOfObjects;
 	
 	void Awake() {
 		_instance = this;

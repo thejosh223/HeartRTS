@@ -12,6 +12,7 @@ public class GUICamController : MonoBehaviour {
 	protected Camera _guiCamera;
 	protected OrganUnitsMenu _organUnitsMenu;
 	protected SelectedUnitsMenu _selUnitsMenu;
+	protected LineRenderer _pathRenderer;
 
 	//
 	protected List<BCell> _selectedCells = new List<BCell>();
@@ -78,6 +79,7 @@ public class GUICamController : MonoBehaviour {
 						// Close Menu
 						_organUnitsMenu.gameObject.SetActive(false);
 						_selUnitsMenu.gameObject.SetActive(false);
+						_pathRenderer.gameObject.SetActive(false);
 						BuildController.Instance.isBuildMode = true;
 					} else if (name.StartsWith("bAddCell")) {
 						if (Heart.Instance.energy >= BCell.COST) {
@@ -99,8 +101,13 @@ public class GUICamController : MonoBehaviour {
 						if (org != null) {
 							if (org != _activeOrgan && org != Heart.Instance) {
 								if (BCell.HasPathTo(Heart.Instance, org)) {
+									// Add
 									_path.AddOrgan(org, org.GetDefaultBehaviour());
 									keepOpen = true;
+
+									// Update Line Renderer
+									_pathRenderer.SetVertexCount(_path.path.Count + 1);
+									_pathRenderer.SetPosition(_path.path.Count, org.transform.position);
 								} else {
 								}
 							}
@@ -123,6 +130,7 @@ public class GUICamController : MonoBehaviour {
 						// Close Menu
 						_organUnitsMenu.gameObject.SetActive(false);
 						_selUnitsMenu.gameObject.SetActive(false);
+						_pathRenderer.gameObject.SetActive(false);
 						BuildController.Instance.isBuildMode = true;
 					}
 				}
@@ -156,6 +164,10 @@ public class GUICamController : MonoBehaviour {
 		_path.path.Clear();
 
 		_organUnitsMenu.bAddCell.SetActive(org == Heart.Instance);
+
+		_pathRenderer = LineRendererPool.Instance.InstantiateAt();
+		_pathRenderer.SetVertexCount(1);
+		_pathRenderer.SetPosition(0, org.transform.position);
 
 		if (org != null) {
 			_organUnitsMenu.gameObject.SetActive(true);
