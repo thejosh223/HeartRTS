@@ -4,43 +4,88 @@ using System.Collections.Generic;
 
 public class BCell {
 
-	// Movement Values
-	public Vessel finalTarget;
-	public Vessel nextTarget;
-	public Vessel currentVessel;
+	// Movement Values (only for transit)
+	public Vessel finalTarget; // Final target organ
+	public Vessel nextTarget; // Next Immediate VesselEndpoint/Organ
+	public Vessel currentVessel; // Current Immediate Vessel
 	
-	//
-	public Organ _targetOrgan;
-	private float _carryingEnergy;
-	private float _maxEnergy = 10f;
+	// Behaviour
+	public OrganPath organPath; // Manager for Cell's path.
+//	public Organ waypointedOrgan;
+//	public Organ _targetOrgan;
 	public MovementType _movementMode;
 
+	// Cell Properties
+	public float cellTimer; // This is used for timing when inside an organ.
+	public float energyMultiplier = 1f;
+	private float _carryingEnergy;
+	private float _maxEnergy = 10f;
+
 	public BCell () {
+		organPath = new OrganPath(this);
+		MovementMode = MovementType.Wait;
 	}
 
+	// Function: Updates Movement Values
 	public void OnVesselEnter(Vessel v) {
-		// Basics
+		// Reset timer.
+		cellTimer = -1f;
+
 		currentVessel = v;
 		if (v == finalTarget) {
 			nextTarget = null;
 			return;
 		}
 		if (v == nextTarget) 
-			nextTarget = SearchNextTarget();
+			nextTarget = SearchNextTarget(); // Pathfind to next target
+	}
 
-		// Other
-		if (v is Organ) {
-			_targetOrgan = (Organ)v;
-		}
+	public void ExecutePath() {
+		organPath.SetNextTarget();
+	}
+
+	public void SetTarget(Vessel current, Organ v) {
+		currentVessel = current == null ? this.currentVessel : current;
+		finalTarget = v;
+
+		if (currentVessel != finalTarget) 
+			nextTarget = SearchNextTarget();
+	}
+	
+	public bool IsAtDestination() {
+		return currentVessel == finalTarget;
 	}
 
 	/*
-	 * Movement
+	 * Setters
+	 */
+	public float SubtractEnergy(float amount) {
+		float sub = amount;
+		_carryingEnergy -= amount;
+		return sub * energyMultiplier;
+	}
+
+	public float CurrentEnergy {
+		get { return _carryingEnergy; }
+		set { _carryingEnergy = value; }
+	}
+
+	public float MaxEnergy {
+		get { return _maxEnergy; }
+	}
+
+	public MovementType MovementMode {
+		get { return _movementMode; }
+		set { _movementMode = value; }
+	}
+
+	/*
+	 * A Star
 	 */
 	public Vessel SearchNextTarget() {
 		List<Node> openSet = new List<Node>();
 		List<Node> closedSet = new List<Node>();
-
+		
 		openSet.Add(new Node(currentVessel, 0f, Vector3.Distance(currentVessel.transform.position, finalTarget.transform.position)));
 		while (openSet.Count > 0) {
 			// Find the Node with the lowest F
@@ -50,22 +95,22 @@ public class BCell {
 					lowestIndex = i;
 				}
 			}
-				
+			
 			Node current = openSet[lowestIndex];
 			openSet.RemoveAt(lowestIndex);
 			closedSet.Add(current);
-				
+			
 			if (current.pos == finalTarget) {
 				// Found!
 				while (current.parent.parent != null) 
 					current = current.parent;
 				return current.pos;
 			}
-
+			
 			Vessel[] neighbors = current.pos.GetNextNodes();
 			for (int i = 0; i < neighbors.Length; i++) {
 				float tentative_g = current.g + Vector3.Distance(neighbors[i].transform.position, current.pos.transform.position);
-					
+				
 				// Check if the node has already been visited
 				bool found = false;
 				for (int j = 0; j < closedSet.Count; j++) {
@@ -76,7 +121,7 @@ public class BCell {
 				}
 				if (found)
 					continue;
-					
+				
 				// Check if neighbor is in openSet
 				bool inOpenSet = false;
 				int o = 0;
@@ -86,7 +131,7 @@ public class BCell {
 						break;
 					}
 				}
-					
+				
 				Node n;
 				if (!inOpenSet || tentative_g < current.g) {
 					if (!inOpenSet) {
@@ -105,47 +150,6 @@ public class BCell {
 		return null;
 	}
 
-	public bool SetTarget(Vessel current, Organ v) {
-		currentVessel = current;
-		finalTarget = v;
-		nextTarget = SearchNextTarget();
-
-		if (nextTarget == null)
-			return false;
-		return true;
-	}
-	
-	public bool IsAtDestination() {
-		return currentVessel == finalTarget;
-	}
-
-	/*
-	 * Setters
-	 */
-	public float CurrentEnergy {
-		get { return _carryingEnergy; }
-		set { 
-			_carryingEnergy = value; 
-		}
-	}
-
-	public float MaxEnergy {
-		get { return _maxEnergy; }
-	}
-
-	public MovementType MovementMode {
-		get { return _movementMode; }
-		set { _movementMode = value; }
-	}
-
-	public Organ TargetOrgan {
-		get { return _targetOrgan; }
-		set { _targetOrgan = value; }
-	}
-
-	/*
-	 * A Star
-	 */
 	public static bool HasPathTo(Vessel start, Vessel end) {
 		List<Node> openSet = new List<Node>();
 		List<Node> closedSet = new List<Node>();

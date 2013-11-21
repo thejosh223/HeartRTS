@@ -10,6 +10,7 @@ public class CameraController : MonoBehaviour {
 
 	// Movement Controls
 	protected Vector3 initCamDown;
+	protected float initOrthoSize;
 	protected bool isMouseSet = false;
 	protected Vector3 initMouseDown;
 	protected bool isMouse2Set = false;
@@ -41,6 +42,7 @@ public class CameraController : MonoBehaviour {
 				isMouseSet = true;
 				initCamDown = transform.position;
 				initMouseDown = viewportPt1;
+				initOrthoSize = cam.orthographicSize;
 			}
 
 			// Multitouch Pinch
@@ -64,14 +66,17 @@ public class CameraController : MonoBehaviour {
 			 * Moving the actual camera
 			 */
 			// Zoom Camera
-			float newZ = initCamDown.z;
+//			float newZ = initCamDown.z;
+			float orthoMult = 1f;
+
 			if (isMouse2Set) {
 				float initDist = Vector3.Distance(initMouseDown, initMouse2Down);
 				float newDist = Vector3.Distance(viewportPt1, viewportPt2);
-				
-				float initFrustrumHeight = 2f * Mathf.Abs(initCamDown.z) * Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
-				float targetHeight = (initDist / newDist) * initFrustrumHeight;
-				newZ = - (targetHeight / (2f * Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad)));
+				orthoMult = initDist / newDist;
+
+//				float initFrustrumHeight = 2f * Mathf.Abs(initCamDown.z) * Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
+//				float targetHeight = (initDist / newDist) * initFrustrumHeight;
+//				newZ = - (targetHeight / (2f * Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad)));
 			}
 			
 			// Move camera into the proper place
@@ -82,7 +87,8 @@ public class CameraController : MonoBehaviour {
 			delta.y *= frustrumHeight;
 			delta.z = 0;
 			Vector3 newPos = initCamDown - delta;
-			newPos.z = newZ;
+//			newPos.z = newZ;
+			cam.orthographicSize = initOrthoSize * orthoMult;
 			transform.position = newPos;
 		}
 
