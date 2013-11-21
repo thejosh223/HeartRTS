@@ -73,15 +73,12 @@ public class CameraController : MonoBehaviour {
 				float initDist = Vector3.Distance(initMouseDown, initMouse2Down);
 				float newDist = Vector3.Distance(viewportPt1, viewportPt2);
 				orthoMult = initDist / newDist;
-
-//				float initFrustrumHeight = 2f * Mathf.Abs(initCamDown.z) * Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
-//				float targetHeight = (initDist / newDist) * initFrustrumHeight;
-//				newZ = - (targetHeight / (2f * Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad)));
 			}
 			
 			// Move camera into the proper place
-			float frustrumHeight = 2f * Mathf.Abs(transform.position.z) * Mathf.Tan(cam.fieldOfView * 0.5f * Mathf.Deg2Rad);
+			float frustrumHeight = 2 * cam.orthographicSize;
 			float frustrumWidth = frustrumHeight * cam.aspect;
+
 			Vector3 delta = viewportPt1 - initMouseDown;
 			delta.x *= frustrumWidth;
 			delta.y *= frustrumHeight;
