@@ -6,6 +6,10 @@ public class VesselEndpoint : VesselContainer {
 	
 //	private static float SEGMENT_BUILDTIME = 0.0625f;
 	private static float SEGMENT_BUILDTIME = 0f;
+	//
+	private Vessel buildToVessel;
+
+	//
 	private bool _isBuilding = true;
 	private float _lastBuildTime;
 	Vessel[] segmentList;
@@ -52,4 +56,8 @@ public class VesselEndpoint : VesselContainer {
 			}
 		}
 	}
+//
+//	public void BuildTo(Vessel v) {
+//		_isBuilding = true;
+//	}
 }
