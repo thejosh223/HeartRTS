@@ -74,8 +74,8 @@ public class BuildController : MonoBehaviour {
 							if (!found) {
 								LineRenderer r = LineRendererPool.Instance.InstantiateAt();
 								Vector3 radiusLineBasePos = hitColliderVessel.transform.position;
-								Vector3 directionToCam = (CameraController.Instance.transform.position - radiusLineBasePos).normalized;
-								r.SetPosition(0, radiusLineBasePos + directionToCam * LINE_RENDERER_OFFSET);
+//								Vector3 directionToCam = (CameraController.Instance.transform.position - radiusLineBasePos).normalized;
+								r.SetPosition(0, radiusLineBasePos - Vector3.forward * LINE_RENDERER_OFFSET);
 								radiusLineRenderers.Add(new VesselLineRenderer(hitColliderVessel, r));
 							}
 						}
@@ -94,8 +94,8 @@ public class BuildController : MonoBehaviour {
 					}
 
 					for (int i = 0; i < radiusLineRenderers.Count; i++) {
-						Vector3 directionToCam = (CameraController.Instance.transform.position - v).normalized;
-						radiusLineRenderers[i].r.SetPosition(1, v + directionToCam * LINE_RENDERER_OFFSET);
+//						Vector3 directionToCam = (CameraController.Instance.transform.position - v).normalized;
+						radiusLineRenderers[i].r.SetPosition(1, v - Vector3.forward * LINE_RENDERER_OFFSET);
 					}
 				} else {
 					radiusIdentifier.renderer.material.color = inactiveColor;
@@ -153,9 +153,9 @@ public class BuildController : MonoBehaviour {
 				radiusIdentifier.transform.localScale = new Vector3(buildRadius * 2f, buildRadius * 2f, buildRadius * 2f);
 
 				Vector3 radiusLineBasePos = _sourceVessel.transform.position;
-				Vector3 directionToCam = (CameraController.Instance.transform.position - radiusLineBasePos).normalized;
+//				Vector3 directionToCam = (CameraController.Instance.transform.position - radiusLineBasePos).normalized;
 				LineRenderer r = LineRendererPool.Instance.InstantiateAt();
-				r.SetPosition(0, radiusLineBasePos + directionToCam * LINE_RENDERER_OFFSET);
+				r.SetPosition(0, radiusLineBasePos - Vector3.forward * LINE_RENDERER_OFFSET);
 				radiusLineRenderers.Add(new VesselLineRenderer(_sourceVessel, r));
 			}
 		}

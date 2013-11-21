@@ -1,30 +1,14 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Cells\BCell.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Util\Parallax.cs">
     <Files>
-      <File FileName="Assets\Scripts\Controllers\GUICamController.cs" Line="75" Column="20" />
-      <File FileName="Assets\Scripts\Controllers\GUICamController.cs" Line="75" Column="20" />
-      <File FileName="Assets\Scripts\Organs\Organ.cs" Line="41" Column="29" />
-      <File FileName="Assets\Scripts\Cells\OrganPath.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\Organs\Kidney.cs" Line="13" Column="1" />
-      <File FileName="Assets\Scripts\Cells\BCell.cs" Line="32" Column="3" />
+      <File FileName="..\..\..\Documents\2D Platformer\Assets\Scripts\CameraFollow.cs" Line="68" Column="1" />
+      <File FileName="..\..\..\Documents\2D Platformer\Assets\Scripts\BackgroundParallax.cs" Line="52" Column="1" />
+      <File FileName="Assets\Scripts\Controllers\CameraController.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Controllers\BuildController.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Cells\BCell.cs" Line="31" Column="1" />
+      <File FileName="Assets\Scripts\Util\Parallax.cs" Line="20" Column="38" />
     </Files>
-    <Pads>
-      <Pad Id="ProjectPad">
-        <State expanded="True">
-          <Node name="Assembly-CSharp" expanded="True">
-            <Node name="Scripts" expanded="True">
-              <Node name="Cells" expanded="True">
-                <Node name="BCell.cs" selected="True" />
-              </Node>
-              <Node name="Controllers" expanded="True" />
-              <Node name="Organs" expanded="True" />
-              <Node name="Vessels" expanded="True" />
-            </Node>
-          </Node>
-        </State>
-      </Pad>
-    </Pads>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />

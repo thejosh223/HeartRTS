@@ -28,8 +28,6 @@ public class BCell {
 
 	// Function: Updates Movement Values
 	public void OnVesselEnter(Vessel v) {
-		Debug.Log("Energy Mult: " + energyMultiplier);
-
 		// Reset timer.
 		cellTimer = -1f;
 
