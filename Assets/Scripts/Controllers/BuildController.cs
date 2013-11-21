@@ -72,31 +72,28 @@ public class BuildController : MonoBehaviour {
 
 				// Instantiate new segment
 				if (dist <= buildRadius) {
-					Vessel hitVessel = null;
+					if (Heart.Instance.energy >= Vessel.VESSELSEGMENT_COST) {
+						Vessel hitVessel = null;
 
-					Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-					RaycastHit hit;
-					if (Physics.Raycast(ray, out hit, Mathf.Infinity)) 
-						hitVessel = hit.transform.GetComponent<Vessel>();
+						Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+						RaycastHit hit;
+						if (Physics.Raycast(ray, out hit, Mathf.Infinity)) 
+							hitVessel = hit.transform.GetComponent<Vessel>();
 
-					if (hitVessel != null) {
-						// Vessel or Organ Hit
-						// -No need to instantiate.
-						hitVessel.AttachVessel(_sourceVessel);
-						Debug.Log("Not Null!");
-					} else {
-						// Nothing Hit.
-						Vessel newlyInitted = InstantiateVessel(_sourceVessel, v);
-						newlyInitted.AttachVessel(_sourceVessel);
-						Debug.Log("Null!");
+						if (hitVessel != _sourceVessel) {
+							if (hitVessel != null) {
+								// Vessel or Organ Hit
+								// -No need to instantiate.
+								hitVessel.AttachVessel(_sourceVessel);
+								OnBuild();
+							} else {
+								// Nothing Hit.
+								Vessel newlyInitted = InstantiateVessel(_sourceVessel, v);
+								newlyInitted.AttachVessel(_sourceVessel);
+								OnBuild();
+							}
+						}
 					}
-
-//					for (int i = 0; i < hitColliders.Length; i++) {
-//						Vessel hitColliderVessel = hitColliders[i].GetComponent<Vessel>();
-//						if (hitColliderVessel != null && hitColliderVessel != _sourceVessel) {
-//							newlyInitted.AttachVessel(hitColliderVessel);
-//						}
-//					}
 				}
 
 				if (dist <= minBuildRadius) {
@@ -108,6 +105,10 @@ public class BuildController : MonoBehaviour {
 
 			SourceVessel = null;
 		}
+	}
+
+	private void OnBuild() {
+		Heart.Instance.energy -= Vessel.VESSELSEGMENT_COST;
 	}
 
 	private Vessel SourceVessel {
@@ -136,7 +137,6 @@ public class BuildController : MonoBehaviour {
 		GameObject g = Instantiate(Heart.Instance.vNodePrefab, pos, Quaternion.identity) as GameObject;
 		VesselEndpoint v = g.GetComponent<VesselEndpoint>();
 		v.name = "VesselEndpoint_" + GameController.vesselCounter++;
-//		v.AttachVessel(attachedTo);
 		return v;
 	}
 

@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 
 public class Kidney : Organ {
@@ -13,7 +13,7 @@ public class Kidney : Organ {
 			} else {
 				if (b.cellTimer <= Time.time) {
 					b.energyMultiplier = MULTIPLIER_AMT;
-					PumpOutCell(b);
+					QueuePumpOutCell(b);
 				}
 			}
 		}
