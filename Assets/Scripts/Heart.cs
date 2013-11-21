@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 public class Heart : Organ {
 
-	public static float STARTING_ENERGY = 1000f;
+	public static float STARTING_ENERGY = 100f;
 
 	// Heart Stats
 	private bool isBeating = false;
@@ -88,6 +88,9 @@ public class Heart : Organ {
 	}
 
 	private void PumpBlood() {
+		Organ[] o = FindObjectsOfType<Organ>();
+		for (int i = 0; i < o.Length; i++) 
+			o[i].OnHeartPump();
 	}
 
 	/*

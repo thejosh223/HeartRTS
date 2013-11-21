@@ -3,11 +3,19 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Vessel : MonoBehaviour {
-
+	
+//	protected static float SEGMENT_BUILDTIME = 0.0625f;
+	protected static float SEGMENT_BUILDTIME = 0f;
+	public const float VESSELSEGMENT_COST = 10f;
 	public static int VESSELCOUNTER = 0;
 
 	// Graph
 	protected List<VesselConnection> attachedNodes = new List<VesselConnection>();
+
+	// For building connectinos
+	protected bool _isBuilding = false;
+	protected float _lastBuildTime;
+	protected Vessel[] segmentList;
 
 	/*
 	 * Init Functions
@@ -19,6 +27,32 @@ public class Vessel : MonoBehaviour {
 	}
 
 	protected virtual void Update() {
+	}
+
+	protected virtual void LateUpdate() {
+		if (_isBuilding) {
+			if (_lastBuildTime <= Time.time) {
+				_lastBuildTime = _lastBuildTime + SEGMENT_BUILDTIME;
+				bool builded = false;
+				for (int i = 0; i < segmentList.Length; i++) {
+					if (segmentList[i] != null) {
+						Vessel v = segmentList[i].GetImmediateVesselTo(this);
+						if (v != this) {
+							v.gameObject.SetActive(true);
+							segmentList[i] = v;
+							builded = true;
+						} else {
+							segmentList[i] = null;
+						}
+					}
+				}
+				
+				if (!builded) {
+					_isBuilding = false;
+					OnBuildingConnectionComplete();
+				}
+			}
+		}
 	}
 
 	/*
@@ -82,9 +116,22 @@ public class Vessel : MonoBehaviour {
 		// point final segment to target destination
 		vTemp.AttachSegment(this, null);
 
+		// Animate building
+		BuildTo(v);
+
 		// Add to List
+		// TODO: move this to OnBuildingConnectionComplete()
 		attachedNodes.Add(new VesselConnection(v, vTemp)); // null -> first one from this node to v
 		v.attachedNodes.Add(new VesselConnection(this, vFirst)); // null -> last one from this node to v
+	}
+
+	public void BuildTo(Vessel v) {
+		_isBuilding = true;
+		_lastBuildTime = Time.time;
+		segmentList = new Vessel[] { v };
+	}
+
+	protected virtual void OnBuildingConnectionComplete() {
 	}
 
 	/*
