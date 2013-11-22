@@ -78,7 +78,12 @@ public class Vessel : MonoBehaviour {
 		return null;
 	}
 
+	public virtual Transform[] GetConnectionPoints() {
+		return new Transform[] { transform };
+	}
+	
 	public virtual void AttachVessel(Vessel v) {
+//		public virtual void AttachVessel(Vessel v, Transform connectTo) {
 		// Create Segments
 		GameObject vesselPrefab = Heart.Instance.vSegmentPrefab;
 

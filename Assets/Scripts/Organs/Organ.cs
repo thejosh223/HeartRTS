@@ -6,12 +6,22 @@ public class Organ : Vessel {
 	
 	public const int MAX_CELLS = 8;
 	public const float ENERGY_TRANSFER_RATE = 10f;
+	public const string CONNECTION_NAME = "Connection";
 
 	//
+	protected GameObject _model;
+	protected Transform[] connectionPoints;
 	protected List<BCell> pumpOutQueue = new List<BCell>();
 	protected List<BCell> currentCells = new List<BCell>();
 	protected float energyTransferRate = ENERGY_TRANSFER_RATE;
 	public float energy = 0;
+
+	protected override void Start() {
+		base.Start();
+		Transform t = transform.FindChild("Model");
+		if (t != null)
+			_model = t.gameObject;
+	}
 
 	protected override void Update() {
 		base.Update();
@@ -26,6 +36,15 @@ public class Organ : Vessel {
 					QueuePumpOutCell(currentCells[i]);
 			}
 		}
+
+		// Get connection points
+		List<Transform> children = new List<Transform>();
+		for (int i = 0; i < transform.childCount; i++) 
+			if (transform.GetChild(i).name == CONNECTION_NAME) 
+				children.Add(transform);
+		connectionPoints = children.ToArray();
+		if (connectionPoints.Length == 0)
+			connectionPoints = new Transform[] { transform };
 	}
 
 	protected virtual void MovementTypeCall(BCell b, MovementType mov) {
@@ -90,5 +109,9 @@ public class Organ : Vessel {
 	public override void BCellExit(BCell b) {
 		base.BCellExit(b);
 		currentCells.Remove(b);
+	}
+
+	public override Transform[] GetConnectionPoints() {
+		return connectionPoints;
 	}
 }

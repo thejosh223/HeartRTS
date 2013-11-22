@@ -59,8 +59,22 @@ public class BuildController : MonoBehaviour {
 				Vessel snapToVessel = ClosestVessel(v, SNAP_RADIUS, _sourceVessel.transform.position, buildRadius);
 
 				if (dist <= buildRadius) {
-					if (snapToVessel != null) 
-						v = snapToVessel.transform.position;
+					if (snapToVessel != null) {
+						Transform[] t = snapToVessel.GetConnectionPoints();
+						Debug.Log("Snap: " + snapToVessel.name + " : " + t.Length);
+
+						Vector3 closestPos = t[0].position;
+						float closestDist = Vector3.Distance(t[0].position, v);
+						for (int i = 1; i < t.Length; i++) {
+							float d = Vector3.Distance(t[i].position, v);
+							if (d < closestDist) {
+								closestDist = d;
+								closestPos = t[i].position;
+							}
+						}
+						v = closestPos;
+						Debug.DrawRay(v, Vector3.up * 2f);
+					}
 
 					radiusIdentifier.renderer.material.color = activeColor;
 					for (int i = 0; i < radiusLineRenderers.Count; i++) {
@@ -91,7 +105,6 @@ public class BuildController : MonoBehaviour {
 							hitVessel = hit.transform.GetComponent<Vessel>();
 
 						if (hitVessel != null) {
-							
 							if (hitVessel != _sourceVessel) {
 								// Vessel or Organ Hit
 								// -No need to instantiate.
