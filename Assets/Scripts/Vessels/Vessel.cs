@@ -102,6 +102,7 @@ public class Vessel : MonoBehaviour {
 			g.transform.parent = transform.parent;
 			g.name = "Segment: " + (VESSELCOUNTER++);
 			VesselSegment v2 = g.GetComponent<VesselSegment>();
+			v2.RotateTowards(connectTo.position - connectFrom.position);
 
 			// point current segment (newly instantiated) backward
 			v2.AttachSegment(v, vTemp);

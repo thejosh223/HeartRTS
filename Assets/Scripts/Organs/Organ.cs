@@ -112,7 +112,6 @@ public class Organ : Vessel {
 	}
 
 	public override Transform[] GetConnectionPoints() {
-		Debug.Log("get Connection: " + name);
 		return connectionPoints;
 	}
 }
