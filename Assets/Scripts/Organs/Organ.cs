@@ -21,6 +21,15 @@ public class Organ : Vessel {
 		Transform t = transform.FindChild("Model");
 		if (t != null)
 			_model = t.gameObject;
+
+		// Get connection points
+		List<Transform> children = new List<Transform>();
+		foreach (Transform child in transform)
+			if (child.name == CONNECTION_NAME) 
+				children.Add(child);
+		connectionPoints = children.ToArray();
+		if (connectionPoints.Length == 0)
+		connectionPoints = new Transform[] { transform };
 	}
 
 	protected override void Update() {
@@ -36,15 +45,6 @@ public class Organ : Vessel {
 					QueuePumpOutCell(currentCells[i]);
 			}
 		}
-
-		// Get connection points
-		List<Transform> children = new List<Transform>();
-		for (int i = 0; i < transform.childCount; i++) 
-			if (transform.GetChild(i).name == CONNECTION_NAME) 
-				children.Add(transform);
-		connectionPoints = children.ToArray();
-		if (connectionPoints.Length == 0)
-			connectionPoints = new Transform[] { transform };
 	}
 
 	protected virtual void MovementTypeCall(BCell b, MovementType mov) {
@@ -112,6 +112,7 @@ public class Organ : Vessel {
 	}
 
 	public override Transform[] GetConnectionPoints() {
+		Debug.Log("get Connection: " + name);
 		return connectionPoints;
 	}
 }

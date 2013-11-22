@@ -82,19 +82,18 @@ public class Vessel : MonoBehaviour {
 		return new Transform[] { transform };
 	}
 	
-	public virtual void AttachVessel(Vessel v) {
-//		public virtual void AttachVessel(Vessel v, Transform connectTo) {
+	public virtual void AttachVessel(Vessel v, Transform connectFrom, Transform connectTo) {
 		// Create Segments
 		GameObject vesselPrefab = Heart.Instance.vSegmentPrefab;
 
-		Vector3 prevPos = v.transform.position;
+		Vector3 prevPos = connectFrom.position;
 		VesselSegment vFirst = null; 
 		VesselSegment vTemp = null;
 
-		float dist = Vector3.Distance(transform.position, prevPos);
+		float dist = Vector3.Distance(connectTo.position, prevPos);
 		int numVessels = (int)(dist / vesselPrefab.transform.localScale.x); // Note: localscale for prefab == lossyscale in game
-		float deltaX = (transform.position.x - prevPos.x) / numVessels;
-		float deltaY = (transform.position.y - prevPos.y) / numVessels;
+		float deltaX = (connectTo.position.x - prevPos.x) / numVessels;
+		float deltaY = (connectTo.position.y - prevPos.y) / numVessels;
 		for (int i = 0; i < numVessels; i++) {
 			// Instantiate
 			GameObject g = Instantiate(vesselPrefab, //

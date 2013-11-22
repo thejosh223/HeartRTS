@@ -59,25 +59,13 @@ public class BuildController : MonoBehaviour {
 				Vessel snapToVessel = ClosestVessel(v, SNAP_RADIUS, _sourceVessel.transform.position, buildRadius);
 
 				if (dist <= buildRadius) {
-					if (snapToVessel != null) {
-						Transform[] t = snapToVessel.GetConnectionPoints();
-						Debug.Log("Snap: " + snapToVessel.name + " : " + t.Length);
-
-						Vector3 closestPos = t[0].position;
-						float closestDist = Vector3.Distance(t[0].position, v);
-						for (int i = 1; i < t.Length; i++) {
-							float d = Vector3.Distance(t[i].position, v);
-							if (d < closestDist) {
-								closestDist = d;
-								closestPos = t[i].position;
-							}
-						}
-						v = closestPos;
-						Debug.DrawRay(v, Vector3.up * 2f);
-					}
+					if (snapToVessel != null) 
+						v = ClosestConnectionPoint(snapToVessel, v).position;
 
 					radiusIdentifier.renderer.material.color = activeColor;
 					for (int i = 0; i < radiusLineRenderers.Count; i++) {
+						Vector3 srcPos = ClosestConnectionPoint(_sourceVessel, v).position;
+						radiusLineRenderers[i].r.SetPosition(0, srcPos - Vector3.forward * LINE_RENDERER_OFFSET);
 						radiusLineRenderers[i].r.SetPosition(1, v - Vector3.forward * LINE_RENDERER_OFFSET);
 						radiusLineRenderers[i].r.enabled = true;
 					}
@@ -108,19 +96,25 @@ public class BuildController : MonoBehaviour {
 							if (hitVessel != _sourceVessel) {
 								// Vessel or Organ Hit
 								// -No need to instantiate.
-								hitVessel.AttachVessel(_sourceVessel);
+								hitVessel.AttachVessel(_sourceVessel, //
+										ClosestConnectionPoint(_sourceVessel, v), //
+										ClosestConnectionPoint(hitVessel, v));
 								OnBuild();
 							}
 						} else {
 							Vessel snapToVessel = ClosestVessel(v, SNAP_RADIUS, _sourceVessel.transform.position, buildRadius);
 
 							if (snapToVessel != null) {
-								snapToVessel.AttachVessel(_sourceVessel);
+								snapToVessel.AttachVessel(_sourceVessel, //
+								                          ClosestConnectionPoint(_sourceVessel, v),//
+								                          ClosestConnectionPoint(snapToVessel, v));
 								OnBuild();
 							} else {
 								// Nothing Hit.
 								Vessel newlyInitted = InstantiateVessel(_sourceVessel, v);
-								newlyInitted.AttachVessel(_sourceVessel);
+								newlyInitted.AttachVessel(_sourceVessel, //
+								                          ClosestConnectionPoint(_sourceVessel, v), //
+								                          ClosestConnectionPoint(newlyInitted, v));
 								OnBuild();
 							}
 						}
@@ -190,6 +184,23 @@ public class BuildController : MonoBehaviour {
 			}
 		}
 		return minVessel;
+	}
+
+	protected Transform ClosestConnectionPoint(Vessel ves, Vector3 v) {
+		Transform[] t = ves.GetConnectionPoints();
+		Transform closestTrans = t[0];
+		float closestDist = Vector3.Distance(t[0].position, v);
+
+		if (t.Length > 1) {
+			for (int i = 1; i < t.Length; i++) {
+				float d = Vector3.Distance(t[i].position, v);
+				if (d < closestDist) {
+					closestDist = d;
+					closestTrans = t[i];
+				}
+			}
+		}
+		return closestTrans;
 	}
 
 	protected RaycastHit Raycast(Vector3 v) {
