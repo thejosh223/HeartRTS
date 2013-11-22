@@ -56,7 +56,7 @@ public class BuildController : MonoBehaviour {
 				float dist = Vector3.Distance(v, _sourceVessel.transform.position);
 
 				// Spherecast
-				Vessel snapToVessel = ClosestVessel(v, SNAP_RADIUS);
+				Vessel snapToVessel = ClosestVessel(v, SNAP_RADIUS, _sourceVessel.transform.position, buildRadius);
 
 				if (dist <= buildRadius) {
 					if (snapToVessel != null) 
@@ -99,7 +99,7 @@ public class BuildController : MonoBehaviour {
 								OnBuild();
 							}
 						} else {
-							Vessel snapToVessel = ClosestVessel(v, SNAP_RADIUS);
+							Vessel snapToVessel = ClosestVessel(v, SNAP_RADIUS, _sourceVessel.transform.position, buildRadius);
 
 							if (snapToVessel != null) {
 								snapToVessel.AttachVessel(_sourceVessel);
@@ -161,7 +161,7 @@ public class BuildController : MonoBehaviour {
 	/*
 	 * Casting Functions
 	 */
-	protected Vessel ClosestVessel(Vector3 v, float radius) {
+	protected Vessel ClosestVessel(Vector3 v, float radius, Vector3 center, float centerMaxDist) {
 		Collider[] c = Physics.OverlapSphere(v, radius);
 		Vessel minVessel = null;
 		float minDist = Mathf.Infinity;
@@ -169,7 +169,8 @@ public class BuildController : MonoBehaviour {
 			Vessel ves = c[i].GetComponent<Vessel>();
 			if (ves != null) {
 				float dist = Vector3.Distance(ves.transform.position, v);
-				if (dist < minDist) {
+				float centerDist = Vector3.Distance(ves.transform.position, center);
+				if (centerDist < centerMaxDist && dist < minDist) {
 					minVessel = ves;
 					minDist = dist;
 				}
