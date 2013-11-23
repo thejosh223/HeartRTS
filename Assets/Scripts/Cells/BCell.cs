@@ -155,7 +155,7 @@ public class BCell {
 	public static bool HasPathTo(Vessel start, Vessel end) {
 		List<Node> openSet = new List<Node>();
 		List<Node> closedSet = new List<Node>();
-		
+
 		openSet.Add(new Node(start, 0f, Vector3.Distance(start.transform.position, end.transform.position)));
 		while (openSet.Count > 0) {
 			// Find the Node with the lowest F

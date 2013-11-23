@@ -4,14 +4,16 @@ using System.Collections.Generic;
 
 public class BuildController : MonoBehaviour {
 
-	public const float SNAP_RADIUS = 1f;
+	public const float SNAP_RADIUS = 0.75f;
+	public static int ORGAN_LAYER = 1 << LayerMask.NameToLayer("Organ");
+	public static int OBSTACLE_LAYER = 1 << LayerMask.NameToLayer("Obstacles");
 
 	//
 	public bool isBuildMode = true;
 	protected float minBuildRadius = 2f;
 	protected float buildRadius = 8f; // TODO: Set this to 6f
-	private Vessel _sourceVessel;
 	protected Plane xyZeroPlane;
+	private Vessel _sourceVessel;
 
 	// Build Guidelines
 	private static float LINE_RENDERER_OFFSET = 2f;
@@ -62,7 +64,7 @@ public class BuildController : MonoBehaviour {
 				float dist = Vector3.Distance(closestConnnectionPoint.position, mousePos);
 				Vessel snapToVessel = ClosestVessel(mousePos, SNAP_RADIUS, _sourceVessel.transform.position, buildRadius);
 
-				if (dist <= buildRadius) {
+				if (dist <= buildRadius && !IsObstructed(closestConnnectionPoint.position, mousePos)) {
 					if (snapToVessel != null) 
 						mousePos = ClosestConnectionPoint(snapToVessel, mousePos).position;
 
@@ -85,13 +87,13 @@ public class BuildController : MonoBehaviour {
 			if (_sourceVessel != null) {
 				// Get the transform of the closest ConnectionPoint
 				Vector3 mousePos = RaycastXYPlane(Input.mousePosition);
-				Transform closestConnnectionPoint = ClosestConnectionPoint(_sourceVessel, mousePos);
+				Transform closestConnectionPt = ClosestConnectionPoint(_sourceVessel, mousePos);
 				
 				// Set closestConnectionPoint
-				radiusIdentifier.transform.position = closestConnnectionPoint.position;
+				radiusIdentifier.transform.position = closestConnectionPt.position;
 				
 				// Compute Distance
-				float dist = Vector3.Distance(closestConnnectionPoint.position, mousePos);
+				float dist = Vector3.Distance(closestConnectionPt.position, mousePos);
 
 				// Instantiate new segment
 				if (dist <= buildRadius) {
@@ -103,29 +105,33 @@ public class BuildController : MonoBehaviour {
 							hitVessel = hit.transform.GetComponent<Vessel>();
 
 						if (hitVessel != null) {
-							if (hitVessel != _sourceVessel && hitVessel != _sourceVessel && !hitVessel.IsConnectedTo(_sourceVessel)) {
-								// Vessel or Organ Hit
-								// -No need to instantiate.
-								hitVessel.AttachVessel(_sourceVessel, //
-										ClosestConnectionPoint(_sourceVessel, mousePos), //
-										ClosestConnectionPoint(hitVessel, mousePos));
-								OnBuild();
+							if (hitVessel != _sourceVessel && !hitVessel.IsConnectedTo(_sourceVessel)) {
+								// Build to a raycasted Organ/Node
+								Transform closestTargetConnectionPt = ClosestConnectionPoint(hitVessel, mousePos);
+								if (!IsObstructed(closestConnectionPt.position, closestTargetConnectionPt.position)) {
+									hitVessel.AttachVessel(_sourceVessel, closestConnectionPt, closestTargetConnectionPt);
+									OnBuild();
+								}
+							} else {
 							}
 						} else {
 							Vessel snapToVessel = ClosestVessel(mousePos, SNAP_RADIUS, _sourceVessel.transform.position, buildRadius);
-
 							if (snapToVessel != null) {
-								snapToVessel.AttachVessel(_sourceVessel, //
-								                          ClosestConnectionPoint(_sourceVessel, mousePos),//
-								                          ClosestConnectionPoint(snapToVessel, mousePos));
-								OnBuild();
-							} else {
-								// Nothing Hit.
-								Vessel newlyInitted = InstantiateVessel(_sourceVessel, mousePos);
-								newlyInitted.AttachVessel(_sourceVessel, //
-								                          ClosestConnectionPoint(_sourceVessel, mousePos), //
-								                          ClosestConnectionPoint(newlyInitted, mousePos));
-								OnBuild();
+								// Snap to closest visible organ/node
+								Transform closestTargetConnectionPt = ClosestConnectionPoint(snapToVessel, mousePos);
+								if (!IsObstructed(closestConnectionPt.position, closestTargetConnectionPt.position)) {
+									snapToVessel.AttachVessel(_sourceVessel, closestConnectionPt, closestTargetConnectionPt);
+									OnBuild();
+								}
+							} else { 
+								// Nothing hit, instantiate new vessel
+								if (!IsObstructed(closestConnectionPt.position, mousePos)) {
+									Vessel newlyInitted = InstantiateVessel(_sourceVessel, mousePos); 
+									newlyInitted.AttachVessel(_sourceVessel, closestConnectionPt, ClosestConnectionPoint(newlyInitted, mousePos));
+									OnBuild();
+								} else {
+									Debug.Log("Obstructed!");
+								}
 							}
 						}
 					}
@@ -158,9 +164,6 @@ public class BuildController : MonoBehaviour {
 
 			if (value != null) {
 				radiusIdentifier.transform.localScale = new Vector3(buildRadius * 2f, buildRadius * 2f, buildRadius * 2f);
-				// radiusIdentifier.transform.position = _sourceVessel.transform.position;
-
-				// Add one line renderer
 				radiusLineRenderers.Add(new VesselLineRenderer(_sourceVessel, LineRendererPool.Instance.InstantiateAt()));
 			}
 		}
@@ -177,15 +180,16 @@ public class BuildController : MonoBehaviour {
 	 * Casting Functions
 	 */
 	protected Vessel ClosestVessel(Vector3 v, float radius, Vector3 center, float centerMaxDist) {
-		Collider[] c = Physics.OverlapSphere(v, radius);
+		Collider[] c = Physics.OverlapSphere(v, radius, ORGAN_LAYER);
 		Vessel minVessel = null;
 		float minDist = Mathf.Infinity;
 		for (int i = 0; i < c.Length; i++) {
 			Vessel ves = c[i].GetComponent<Vessel>();
 			if (ves != null && ves != _sourceVessel && !ves.IsConnectedTo(_sourceVessel)) {
 				float dist = Vector3.Distance(ves.transform.position, v);
-				float centerDist = Vector3.Distance(ves.transform.position, center);
-				if (centerDist < centerMaxDist && dist < minDist) {
+//				float centerDist = Vector3.Distance(ves.transform.position, center);
+//				if (centerDist < centerMaxDist && dist < minDist) {
+				if (dist < minDist) {
 					minVessel = ves;
 					minDist = dist;
 				}
@@ -211,11 +215,19 @@ public class BuildController : MonoBehaviour {
 		return closestTrans;
 	}
 
+	protected bool IsObstructed(Vector3 v1, Vector3 v2) {
+		Debug.DrawLine(v1, v2);
+		Vector3 v = v2 - v1;
+		if (Physics.Raycast(v1, v, v.magnitude, OBSTACLE_LAYER)) 
+			return true;
+		return false;
+	}
+
 	protected RaycastHit Raycast(Vector3 v) {
 		Ray ray = Camera.main.ScreenPointToRay(v);
 		RaycastHit hit;
 		
-		if (Physics.Raycast(ray, out hit, Mathf.Infinity))
+		if (Physics.Raycast(ray, out hit, Mathf.Infinity, ORGAN_LAYER))
 			return hit;
 		return new RaycastHit();
 	}

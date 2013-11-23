@@ -49,7 +49,7 @@ public class GUICamController : MonoBehaviour {
 						int index = _organUnitsMenu.IndexOfHit(rayHit.transform.gameObject);
 
 						// Open selected menu
-						if (_selectedCells.Count == 0) 
+						if (_selectedCells.Count == 0)
 							_selUnitsMenu.gameObject.SetActive(true);
 
 						_selectedCells.Add(_cells[index]);

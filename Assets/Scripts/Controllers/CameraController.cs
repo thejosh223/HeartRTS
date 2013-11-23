@@ -28,6 +28,7 @@ public class CameraController : MonoBehaviour {
 		if (!_allowCamMovement) 
 			return;
 
+//		Ray r = cam.ScreenPointToRay(Input.mousePosition);
 		if (Input.GetMouseButton(0)) { // At least one button is down
 			/*
 			 * Data Collection

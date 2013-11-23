@@ -4,8 +4,9 @@ using System.Collections.Generic;
 
 public class Vessel : MonoBehaviour {
 	
+	protected static float SEGMENT_BUILDTIME = 0.2f;
 //	protected static float SEGMENT_BUILDTIME = 0.0625f;
-	protected static float SEGMENT_BUILDTIME = 0f;
+//	protected static float SEGMENT_BUILDTIME = 0f;
 	public const float VESSELSEGMENT_COST = 10f;
 	public static int VESSELCOUNTER = 0;
 
@@ -39,6 +40,7 @@ public class Vessel : MonoBehaviour {
 						Vessel v = segmentList[i].GetImmediateVesselTo(this);
 						if (v != this) {
 							v.gameObject.SetActive(true);
+							v.OnSetActive();
 							segmentList[i] = v;
 							builded = true;
 						} else {
@@ -141,7 +143,7 @@ public class Vessel : MonoBehaviour {
 
 	public bool IsConnectedTo(Vessel v) {
 		for (int i = 0; i < attachedNodes.Count; i++) 
-			if (attachedNodes[i].node == v || attachedNodes[i].segment) 
+			if (attachedNodes[i].node == v || attachedNodes[i].segment == v) 
 				return true;
 		return false;
 	}
@@ -155,6 +157,9 @@ public class Vessel : MonoBehaviour {
 	}
 
 	public virtual void BCellExit(BCell b) {
+	}
+
+	public virtual void OnSetActive() {
 	}
 
 	protected class VesselConnection {
