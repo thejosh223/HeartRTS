@@ -1,8 +1,9 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace />
-  <MonoDevelop.Ide.Workbench ActiveDocument="..\MTGLifeCounter\Assets\Scripts\Menu\PlayersMenu.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Vessels\Vessel.cs">
     <Files>
-      <File FileName="..\MTGLifeCounter\Assets\Scripts\Menu\PlayersMenu.cs" Line="69" Column="26" />
+      <File FileName="Assets\Scripts\Controllers\BuildController.cs" Line="184" Column="45" />
+      <File FileName="Assets\Scripts\Vessels\Vessel.cs" Line="134" Column="22" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

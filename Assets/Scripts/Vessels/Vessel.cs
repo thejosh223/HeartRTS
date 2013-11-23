@@ -139,6 +139,13 @@ public class Vessel : MonoBehaviour {
 	protected virtual void OnBuildingConnectionComplete() {
 	}
 
+	public bool IsConnectedTo(Vessel v) {
+		for (int i = 0; i < attachedNodes.Count; i++) 
+			if (attachedNodes[i].node == v || attachedNodes[i].segment) 
+				return true;
+		return false;
+	}
+
 	/*
 	 * Cell Entering / Exiting Functions
 	 * -call this when you want a cell to enter/exit the vessel
