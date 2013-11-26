@@ -5,7 +5,7 @@ using System.Collections.Generic;
 public class Organ : Vessel {
 
 	public const float ANIM_TIME = 4f;
-	public const float ANIM_SCALE = 0.05f;
+	public const float ANIM_SCALE = 0.2f;
 	public const int MAX_CELLS = 8;
 	public const float ENERGY_TRANSFER_RATE = 10f;
 	public const string CONNECTION_NAME = "Connection";
@@ -26,6 +26,8 @@ public class Organ : Vessel {
 
 	protected override void Start() {
 		base.Start();
+		buildRadius = 6f;
+
 		Transform t = transform.FindChild("Model");
 		if (t != null)
 			model = t.gameObject;

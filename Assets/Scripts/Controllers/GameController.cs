@@ -12,8 +12,8 @@ public class GameController : MonoBehaviour {
 
 	void Start() {
 		// Level Generation!
-		float increment = 6f;
-		float startRadius = 5f;
+		float increment = 8f;
+		float startRadius = 10f;
 		float maxRadius = startRadius + increment;
 
 		// Layer 1

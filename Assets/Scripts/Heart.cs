@@ -14,8 +14,8 @@ public class Heart : Organ {
 
 	// Animation
 	private const float BEAT_FRACTION = 0.5f;
-	private Vector3 baseScale;
 	private float lastBeatTime;
+	private Vector3 deltaScale;
 
 	// Prefabs
 	public GameObject vNodePrefab;
@@ -28,7 +28,7 @@ public class Heart : Organ {
 	protected override void Start() {
 		base.Start();
 		// Defaults
-		baseScale = model.transform.localScale;
+		buildRadius = 10f;
 
 		// Upgrades
 		upgrades = new Upgrade[] {
@@ -78,16 +78,32 @@ public class Heart : Organ {
 	/*
 	 * Action Functions
 	 */
+	private void BeatUpdate(Vector3 v) {
+		animator.deltaScale += v;
+	}
+
 	public void Beat() {
 		// Animation
 		lastBeatTime = Time.time;
 		float halfBeatLength = heartRate * 0.5f * BEAT_FRACTION;
-		LeanTween.scale(model, baseScale * 1.5f, halfBeatLength, new object[] {
+
+		// Beat Up
+//		LeanTween.value(gameObject, "BeatUpdate", Vector3.zero, animator.baseScale * 0.5f, halfBeatLength, new object[] {
+//						"ease",
+//						LeanTweenType.easeOutElastic
+//				});
+		LeanTween.scale(gameObject, animator.baseScale * 1.5f, halfBeatLength, new object[] {
 						"ease",
 						LeanTweenType.easeOutElastic
 				});
+
+		// Beat Down
 		LeanTween.delayedCall(gameObject, halfBeatLength, "PumpBlood");
-		LeanTween.scale(model, baseScale, halfBeatLength, new object[] {
+//		LeanTween.value(gameObject, "BeatUpdate", animator.baseScale * 0.5f, Vector3.zero, halfBeatLength, new object[] {
+//					"ease",
+//					LeanTweenType.easeOutElastic
+//				});
+		LeanTween.scale(gameObject, animator.baseScale, halfBeatLength, new object[] {
 						"delay",
 						halfBeatLength,
 						"ease",

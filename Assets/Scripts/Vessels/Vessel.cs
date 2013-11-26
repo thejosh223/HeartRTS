@@ -4,9 +4,9 @@ using System.Collections.Generic;
 
 public class Vessel : MonoBehaviour {
 	
-	protected static float SEGMENT_BUILDTIME = 0.2f;
+//	protected static float SEGMENT_BUILDTIME = 0.2f;
 //	protected static float SEGMENT_BUILDTIME = 0.0625f;
-//	protected static float SEGMENT_BUILDTIME = 0f;
+	protected static float SEGMENT_BUILDTIME = 0f;
 	public const float VESSELSEGMENT_COST = 10f; // cost of energy
 	public static int VESSELCOUNTER = 0; // for naming vessels
 
@@ -14,6 +14,7 @@ public class Vessel : MonoBehaviour {
 	protected List<VesselConnection> attachedNodes = new List<VesselConnection>();
 
 	// For building connectinos
+	public float buildRadius = 4f;
 	protected bool _isBuilding = false;
 	protected float _lastBuildTime;
 	protected Vessel[] segmentList;
@@ -87,7 +88,9 @@ public class Vessel : MonoBehaviour {
 	public virtual Transform[] GetConnectionPoints() {
 		return new Transform[] { transform };
 	}
-	
+
+	protected const float OFFSET = 0.5f;
+
 	public virtual void AttachVessel(Vessel v, Transform connectFrom, Transform connectTo) {
 		// Create Segments
 		GameObject vesselPrefab = Heart.Instance.vSegmentPrefab;
