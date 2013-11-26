@@ -18,6 +18,8 @@ public class Organ : Vessel {
 
 	// Organ Stats
 	protected float energyTransferRate = ENERGY_TRANSFER_RATE;
+	public float lifeRegen = 0.1f; // (ie. 10 seconds to revive)
+	protected float life = 1;
 	public float energy = 0;
 
 	// Animation variables
@@ -65,6 +67,10 @@ public class Organ : Vessel {
 		if (this != Heart.Instance) {
 			float t = (((Time.time - startTime) % ANIM_TIME) / ANIM_TIME) * 2 * Mathf.PI;
 			animator.deltaScale += new Vector3(Mathf.Sin(t) * ANIM_SCALE, Mathf.Cos(t) * ANIM_SCALE, 0f);
+		}
+
+		if (Life < 1) {
+			Life += lifeRegen * Time.deltaTime;
 		}
 	}
 
@@ -122,6 +128,21 @@ public class Organ : Vessel {
 		
 		Vessel v = GetImmediateVesselTo(b.nextTarget);
 		v.BCellEnter(b);
+	}
+
+	public float Life {
+		get { return life; }
+		set {
+			life = value;
+
+			if (life <= 0) {
+				life = 0;
+
+				// Disable the organ
+
+				// Animate it's death or something
+			}
+		}
 	}
 
 	public virtual MovementType GetDefaultBehaviour() {
