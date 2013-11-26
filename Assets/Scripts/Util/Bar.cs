@@ -23,6 +23,8 @@ public class Bar : MonoBehaviour {
 	}
 
 	public void SetValue(float val) {
+		if (subBar == null)
+			return;
 		Vector3 v = subBar.localScale;
 		v.x = val;
 		subBar.localScale = v;

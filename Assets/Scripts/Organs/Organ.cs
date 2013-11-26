@@ -3,24 +3,32 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class Organ : Vessel {
-	
+
+	public const float ANIM_TIME = 4f;
+	public const float ANIM_SCALE = 0.05f;
 	public const int MAX_CELLS = 8;
 	public const float ENERGY_TRANSFER_RATE = 10f;
 	public const string CONNECTION_NAME = "Connection";
 
-	//
-	protected GameObject _model;
+	// 
+	public Upgrade[] upgrades; // Crunch time. Make EVERYTHING public.
 	protected Transform[] connectionPoints;
-	protected List<BCell> pumpOutQueue = new List<BCell>();
-	protected List<BCell> currentCells = new List<BCell>();
+	protected List<BCell> pumpOutQueue = new List<BCell>(); // queue for cells leaving the organ. pump out one per heartbeat.
+	protected List<BCell> currentCells = new List<BCell>(); // cells currently inside the organ
+
+	// Organ Stats
 	protected float energyTransferRate = ENERGY_TRANSFER_RATE;
 	public float energy = 0;
+
+	// Animation variables
+	protected GameObject model; // for animation purposes
+	protected float startTime = 0; // animation constant
 
 	protected override void Start() {
 		base.Start();
 		Transform t = transform.FindChild("Model");
 		if (t != null)
-			_model = t.gameObject;
+			model = t.gameObject;
 
 		// Get connection points
 		List<Transform> children = new List<Transform>();
@@ -29,12 +37,17 @@ public class Organ : Vessel {
 				children.Add(child);
 		connectionPoints = children.ToArray();
 		if (connectionPoints.Length == 0)
-		connectionPoints = new Transform[] { transform };
+			connectionPoints = new Transform[] { transform };
+
+		// Animation
+		startTime = Time.time - Random.Range(0f, 2 * Mathf.PI);
+		animator.hasScaleAnimation = true;
 	}
 
 	protected override void Update() {
 		base.Update();
 
+		// Pumping out of cells
 		for (int i = 0; i < currentCells.Count; i++) {
 			BCell b = currentCells[i];
 
@@ -44,6 +57,12 @@ public class Organ : Vessel {
 				else 
 					QueuePumpOutCell(currentCells[i]);
 			}
+		}
+
+		// Animation
+		if (this != Heart.Instance) {
+			float t = (((Time.time - startTime) % ANIM_TIME) / ANIM_TIME) * 2 * Mathf.PI;
+			animator.deltaScale += new Vector3(Mathf.Sin(t) * ANIM_SCALE, Mathf.Cos(t) * ANIM_SCALE, 0f);
 		}
 	}
 
@@ -86,6 +105,12 @@ public class Organ : Vessel {
 			pumpOutQueue.RemoveAt(0);
 			PumpOutCell(b);
 		}
+	}
+
+	public virtual void OpenOrganMenu() {
+		GUICamController.Instance.OpenOrganMenu(this);
+		if (upgrades != null && upgrades.Length > 0) 
+			GUICamController.Instance.OpenUpgradeMenu(this);
 	}
 
 	public void PumpOutCell(BCell b) {

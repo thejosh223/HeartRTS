@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -8,9 +8,9 @@ public class Heart : Organ {
 
 	// Heart Stats
 	private bool isBeating = false;
-	public float heartRate = 0.75f;
+	public float heartRate = 0.75f; // # of beats per second
 	public float heartPressure = 4f; // # of segments per second
-	public float energyGeneration = 2f;
+	public float energyGeneration = 1f;
 
 	// Animation
 	private const float BEAT_FRACTION = 0.5f;
@@ -27,9 +27,13 @@ public class Heart : Organ {
 
 	protected override void Start() {
 		base.Start();
-
 		// Defaults
-		baseScale = _model.transform.localScale;
+		baseScale = model.transform.localScale;
+
+		// Upgrades
+		upgrades = new Upgrade[] {
+			new Upgrade(UpgradeType.HeartRate, 100f), 
+			new Upgrade(UpgradeType.HeartPressure, 100f) };
 
 		// Energy
 		energy = STARTING_ENERGY;
@@ -43,6 +47,9 @@ public class Heart : Organ {
 
 		// Start the heart
 		StartBeating();
+
+		// Animation
+		animator.hasScaleAnimation = false;
 	}
 
 	void OnGUI() {
@@ -75,12 +82,12 @@ public class Heart : Organ {
 		// Animation
 		lastBeatTime = Time.time;
 		float halfBeatLength = heartRate * 0.5f * BEAT_FRACTION;
-		LeanTween.scale(_model, baseScale * 1.5f, halfBeatLength, new object[] {
+		LeanTween.scale(model, baseScale * 1.5f, halfBeatLength, new object[] {
 						"ease",
 						LeanTweenType.easeOutElastic
 				});
 		LeanTween.delayedCall(gameObject, halfBeatLength, "PumpBlood");
-		LeanTween.scale(_model, baseScale, halfBeatLength, new object[] {
+		LeanTween.scale(model, baseScale, halfBeatLength, new object[] {
 						"delay",
 						halfBeatLength,
 						"ease",

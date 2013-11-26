@@ -5,13 +5,13 @@ using System.Collections.Generic;
 public class BuildController : MonoBehaviour {
 
 	public const float SNAP_RADIUS = 0.75f;
-	public static int ORGAN_LAYER = 1 << LayerMask.NameToLayer("Organ");
-	public static int OBSTACLE_LAYER = 1 << LayerMask.NameToLayer("Obstacles");
+	public static int ORGAN_LAYER;
+	public static int OBSTACLE_LAYER;
 
 	//
 	public bool isBuildMode = true;
 	protected float minBuildRadius = 2f;
-	protected float buildRadius = 8f; // TODO: Set this to 6f
+	protected float buildRadius = 6f; // TODO: Set this to 6f
 	protected Plane xyZeroPlane;
 	private Vessel _sourceVessel;
 
@@ -24,6 +24,9 @@ public class BuildController : MonoBehaviour {
 
 	void Awake() {
 		_instance = this;
+		
+		ORGAN_LAYER = 1 << LayerMask.NameToLayer("Organ");
+		OBSTACLE_LAYER = 1 << LayerMask.NameToLayer("Obstacles");
 	}
 
 	void Start() {
@@ -139,7 +142,7 @@ public class BuildController : MonoBehaviour {
 
 				if (dist <= minBuildRadius) {
 					if (_sourceVessel is Organ) {
-						GUICamController.Instance.OpenOrganMenu((Organ)_sourceVessel);
+						((Organ)_sourceVessel).OpenOrganMenu();
 					}
 				}
 			} 

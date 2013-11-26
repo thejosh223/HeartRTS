@@ -8,18 +8,22 @@ public class VesselSegment : VesselContainer {
 
 	//
 	protected Transform[] endPts; // This is for quick access
-	protected float startTime = 0;
-	protected Vector3 basePosition;
+	public float ratioDistanceToPrev; // [0, 1] distance from one endpoint to the next
+
+	// Animation
+	protected float startTime = 0; // animation constant
 
 	protected override void Start() {
 		base.Start();
 
 		endPts = new Transform[] {
-			attachedNodes[0].node.transform,
-			attachedNodes[1].node.transform
+			attachedNodes[0].nodeTransform,
+			attachedNodes[1].nodeTransform
 		};
+		ratioDistanceToPrev = Vector3.Distance(transform.position, endPts[0].position) / Vector3.Distance(endPts[0].position, endPts[1].position);
 
-		basePosition = transform.position;
+		// Animation
+		animator.hasPositionAnimation = true;
 
 		// Disable
 		gameObject.SetActive(false);
@@ -28,8 +32,19 @@ public class VesselSegment : VesselContainer {
 	protected override void Update() {
 		base.Update();
 
+		// set animator's base position.
+		animator.basePosition = endPts[0].position + (endPts[1].position - endPts[0].position).normalized * ratioDistanceToPrev * 
+			Vector3.Distance(endPts[0].position, endPts[1].position);
+
+		// move up and down slowly
 		float t = (((Time.time - startTime) % ANIM_TIME) / ANIM_TIME) * 2 * Mathf.PI;
-		transform.position = basePosition + transform.up * ANIM_SCALE * (Mathf.Sin(t) * 2 - 1f);
+		animator.deltaPosition += transform.up * ANIM_SCALE * (Mathf.Sin(t) * 2 - 1f);
+
+		// rotate towards position
+		RotateTowards(endPts[1].position - endPts[0].position);
+	}
+
+	protected override void LateUpdate() {
 	}
 
 	public override void OnSetActive() {
@@ -44,7 +59,7 @@ public class VesselSegment : VesselContainer {
 	/*
 	 * Init Functions
 	 */
-	public void AttachSegment(Vessel node, VesselSegment seg) {
-		attachedNodes.Add(new VesselConnection(node, seg));
+	public void AttachSegment(Vessel node, VesselSegment seg, Transform t) {
+		attachedNodes.Add(new VesselConnection(node, seg, t));
 	}
 }
