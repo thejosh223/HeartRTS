@@ -10,6 +10,7 @@ public class Heart : Organ {
 	private bool isBeating = false;
 	public float heartRate = 0.75f;
 	public float heartPressure = 4f; // # of segments per second
+	public float energyGeneration = 2f;
 
 	// Animation
 	private const float BEAT_FRACTION = 0.5f;
@@ -28,7 +29,7 @@ public class Heart : Organ {
 		base.Start();
 
 		// Defaults
-		baseScale = transform.localScale;
+		baseScale = _model.transform.localScale;
 
 		// Energy
 		energy = STARTING_ENERGY;
@@ -74,12 +75,12 @@ public class Heart : Organ {
 		// Animation
 		lastBeatTime = Time.time;
 		float halfBeatLength = heartRate * 0.5f * BEAT_FRACTION;
-		LeanTween.scale(gameObject, baseScale * 1.5f, halfBeatLength, new object[] {
+		LeanTween.scale(_model, baseScale * 1.5f, halfBeatLength, new object[] {
 						"ease",
 						LeanTweenType.easeOutElastic
 				});
 		LeanTween.delayedCall(gameObject, halfBeatLength, "PumpBlood");
-		LeanTween.scale(gameObject, baseScale, halfBeatLength, new object[] {
+		LeanTween.scale(_model, baseScale, halfBeatLength, new object[] {
 						"delay",
 						halfBeatLength,
 						"ease",
@@ -88,6 +89,7 @@ public class Heart : Organ {
 	}
 
 	private void PumpBlood() {
+		energy += energyGeneration;
 		Organ[] o = FindObjectsOfType<Organ>();
 		for (int i = 0; i < o.Length; i++) 
 			o[i].OnHeartPump();

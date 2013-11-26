@@ -6,8 +6,13 @@ public class OrganUnitsMenu : MonoBehaviour {
 	public const string PREFIX = "OrganUnit_";
 	protected Organ _activeOrgan;
 	protected GameObject[] cellObjects;
+	public GameObject bAddCell;
 
 	void Start() {
+		// References
+		bAddCell = transform.FindChild("bAddCell").gameObject;
+		bAddCell.SetActive(false);
+
 		// Instantiate lots of stuff.
 		GameObject prefab = transform.FindChild("UnitUnselected").gameObject;
 		cellObjects = new GameObject[Organ.MAX_CELLS];

@@ -1,14 +1,13 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Organs\Organ.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Vessels\VesselSegment.cs">
     <Files>
-      <File FileName="Assets\Scripts\Vessels\Vessel.cs" Line="9" Column="4" />
-      <File FileName="Assets\Scripts\Vessels\VesselContainer.cs" Line="30" Column="1" />
-      <File FileName="Assets\Scripts\Vessels\VesselSegment.cs" Line="17" Column="1" />
-      <File FileName="Assets\Scripts\Vessels\VesselEndpoint.cs" Line="17" Column="45" />
-      <File FileName="Assets\Scripts\Heart.cs" Line="93" Column="23" />
-      <File FileName="Assets\Scripts\Organs\Organ.cs" Line="15" Column="1" />
-      <File FileName="Assets\Scripts\Controllers\GUICamController.cs" Line="131" Column="38" />
+      <File FileName="Assets\Scripts\Controllers\BuildController.cs" Line="14" Column="52" />
+      <File FileName="Assets\Scripts\Cells\BCell.cs" Line="45" Column="19" />
+      <File FileName="Assets\Scripts\Controllers\CameraController.cs" Line="31" Column="55" />
+      <File FileName="Assets\Scripts\Vessels\VesselSegment.cs" Line="40" Column="74" />
+      <File FileName="Assets\Scripts\Vessels\VesselContainer.cs" Line="5" Column="1" />
+      <File FileName="Assets\Scripts\Vessels\Vessel.cs" Line="7" Column="48" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

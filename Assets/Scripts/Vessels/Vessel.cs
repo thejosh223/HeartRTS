@@ -4,8 +4,9 @@ using System.Collections.Generic;
 
 public class Vessel : MonoBehaviour {
 	
+	protected static float SEGMENT_BUILDTIME = 0.2f;
 //	protected static float SEGMENT_BUILDTIME = 0.0625f;
-	protected static float SEGMENT_BUILDTIME = 0f;
+//	protected static float SEGMENT_BUILDTIME = 0f;
 	public const float VESSELSEGMENT_COST = 10f;
 	public static int VESSELCOUNTER = 0;
 
@@ -39,6 +40,7 @@ public class Vessel : MonoBehaviour {
 						Vessel v = segmentList[i].GetImmediateVesselTo(this);
 						if (v != this) {
 							v.gameObject.SetActive(true);
+							v.OnSetActive();
 							segmentList[i] = v;
 							builded = true;
 						} else {
@@ -78,18 +80,22 @@ public class Vessel : MonoBehaviour {
 		return null;
 	}
 
-	public virtual void AttachVessel(Vessel v) {
+	public virtual Transform[] GetConnectionPoints() {
+		return new Transform[] { transform };
+	}
+	
+	public virtual void AttachVessel(Vessel v, Transform connectFrom, Transform connectTo) {
 		// Create Segments
 		GameObject vesselPrefab = Heart.Instance.vSegmentPrefab;
 
-		Vector3 prevPos = v.transform.position;
+		Vector3 prevPos = connectFrom.position;
 		VesselSegment vFirst = null; 
 		VesselSegment vTemp = null;
 
-		float dist = Vector3.Distance(transform.position, prevPos);
+		float dist = Vector3.Distance(connectTo.position, prevPos);
 		int numVessels = (int)(dist / vesselPrefab.transform.localScale.x); // Note: localscale for prefab == lossyscale in game
-		float deltaX = (transform.position.x - prevPos.x) / numVessels;
-		float deltaY = (transform.position.y - prevPos.y) / numVessels;
+		float deltaX = (connectTo.position.x - prevPos.x) / numVessels;
+		float deltaY = (connectTo.position.y - prevPos.y) / numVessels;
 		for (int i = 0; i < numVessels; i++) {
 			// Instantiate
 			GameObject g = Instantiate(vesselPrefab, //
@@ -98,6 +104,7 @@ public class Vessel : MonoBehaviour {
 			g.transform.parent = transform.parent;
 			g.name = "Segment: " + (VESSELCOUNTER++);
 			VesselSegment v2 = g.GetComponent<VesselSegment>();
+			v2.RotateTowards(connectTo.position - connectFrom.position);
 
 			// point current segment (newly instantiated) backward
 			v2.AttachSegment(v, vTemp);
@@ -134,6 +141,13 @@ public class Vessel : MonoBehaviour {
 	protected virtual void OnBuildingConnectionComplete() {
 	}
 
+	public bool IsConnectedTo(Vessel v) {
+		for (int i = 0; i < attachedNodes.Count; i++) 
+			if (attachedNodes[i].node == v || attachedNodes[i].segment == v) 
+				return true;
+		return false;
+	}
+
 	/*
 	 * Cell Entering / Exiting Functions
 	 * -call this when you want a cell to enter/exit the vessel
@@ -143,6 +157,9 @@ public class Vessel : MonoBehaviour {
 	}
 
 	public virtual void BCellExit(BCell b) {
+	}
+
+	public virtual void OnSetActive() {
 	}
 
 	protected class VesselConnection {
