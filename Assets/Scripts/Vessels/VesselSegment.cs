@@ -53,8 +53,6 @@ public class VesselSegment : VesselContainer {
 
 	public void RotateTowards(Vector3 direction) {
 		transform.rotation = Quaternion.Euler(new Vector3(0, 0, Mathf.Atan(direction.y / direction.x) * Mathf.Rad2Deg));
-//		direction = Quaternion.LookRotation(direction, Vector3.up).eulerAngles;
-//		transform.rotation = Quaternion.Euler(direction);
 	}
 
 	/*

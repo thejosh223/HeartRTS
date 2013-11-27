@@ -28,7 +28,7 @@ public class Organ : Vessel {
 
 	protected override void Start() {
 		base.Start();
-		buildRadius = 6f;
+		buildRadius = 8f;
 
 		Transform t = transform.FindChild("Model");
 		if (t != null)
@@ -70,7 +70,9 @@ public class Organ : Vessel {
 		}
 
 		if (Life < 1) {
-			Life += lifeRegen * Time.deltaTime;
+//			Life += lifeRegen * Time.deltaTime;
+			if (Life > 1)
+				Life = 1;
 		}
 	}
 
@@ -134,6 +136,26 @@ public class Organ : Vessel {
 		get { return life; }
 		set {
 			life = value;
+
+			int c = 0;
+			foreach (Transform t in transform) 
+				if (t.name == "OrganDamage")
+					c++;
+
+			int numExpectedDamage = (int)(10 - life * 10);
+			if (c < numExpectedDamage) {
+				// instantiate new damages
+				Vector3 scale = transform.localScale;
+				Vector3 v = transform.position + new Vector3(Random.Range(-scale.x, scale.x), Random.Range(-scale.y, scale.y), -0.1f);
+				GameObject g = OrganDamagePool.Instance.InstantiateAt(v, Quaternion.Euler(new Vector3(0, 0, Random.Range(0, 360f))));
+				g.transform.parent = transform;
+				g.name = "OrganDamage";
+			} else {
+				for (int i = 0; i < c - numExpectedDamage; i++) {
+					GameObject g = transform.FindChild("OrganDamage").gameObject;
+					g.GetComponent<ShakerAnimation>().Deactivate();
+				}
+			}
 
 			if (life <= 0) {
 				life = 0;

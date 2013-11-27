@@ -4,14 +4,13 @@ using System.Collections.Generic;
 
 public class BuildController : MonoBehaviour {
 
-	public const float SNAP_RADIUS = 0.75f;
+	public const float SNAP_RADIUS = 0.5f;
 	public static int ORGAN_LAYER;
 	public static int OBSTACLE_LAYER;
 
 	//
 	public bool isBuildMode = true;
 	protected float minBuildRadius = 2f;
-//	protected float buildRadius = 6f; // TODO: Set this to 6f
 	protected Plane xyZeroPlane;
 	private Vessel _sourceVessel;
 

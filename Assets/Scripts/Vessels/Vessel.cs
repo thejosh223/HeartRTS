@@ -14,7 +14,9 @@ public class Vessel : MonoBehaviour {
 	protected List<VesselConnection> attachedNodes = new List<VesselConnection>();
 
 	// For building connectinos
-	public float buildRadius = 4f;
+	[HideInInspector]
+	public float
+		buildRadius;
 	protected bool _isBuilding = false;
 	protected float _lastBuildTime;
 	protected Vessel[] segmentList;
@@ -30,6 +32,7 @@ public class Vessel : MonoBehaviour {
 
 	protected virtual void Start() {
 		animator = gameObject.AddComponent<Animatulator>();
+		buildRadius = 6f;
 	}
 
 	protected virtual void Update() {

@@ -10,13 +10,6 @@ public class VesselEndpoint : VesselContainer {
 		// Disable Visuals
 		collider.enabled = false;
 		renderer.enabled = false;
-
-		// Start building!
-//		segmentList = new Vessel[attachedNodes.Count];
-//		for (int i = 0; i < attachedNodes.Count; i++) 
-//			segmentList[i] = attachedNodes[i].node;
-//		_lastBuildTime = Time.time;
-//		_isBuilding = true;
 	}
 	
 	protected override void OnBuildingConnectionComplete() {
