@@ -5,8 +5,8 @@ using System.Collections.Generic;
 public class Vessel : MonoBehaviour {
 	
 //	protected static float SEGMENT_BUILDTIME = 0.2f;
-//	protected static float SEGMENT_BUILDTIME = 0.0625f;
-	protected static float SEGMENT_BUILDTIME = 0f;
+	protected static float SEGMENT_BUILDTIME = 0.0625f;
+//	protected static float SEGMENT_BUILDTIME = 0f;
 	public const float VESSELSEGMENT_COST = 10f; // cost of energy
 	public static int VESSELCOUNTER = 0; // for naming vessels
 
@@ -47,6 +47,8 @@ public class Vessel : MonoBehaviour {
 					if (segmentList[i] != null) {
 						Vessel v = segmentList[i].GetImmediateVesselTo(this);
 						if (v != this) {
+							AudioController.Instance.PlayPop();
+
 							v.gameObject.SetActive(true);
 							v.OnSetActive();
 							segmentList[i] = v;

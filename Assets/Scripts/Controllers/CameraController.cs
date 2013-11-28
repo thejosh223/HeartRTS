@@ -51,12 +51,14 @@ public class CameraController : MonoBehaviour {
 
 			// Multitouch Pinch
 			if (Input.touchCount >= 2 || Input.GetKey(KeyCode.LeftShift)) {
-				// ACTUAL CODE (for Android)
-//				Vector2 touch2 = Input.GetTouch(0).position;
+//				#if UNITY_ANDROID
+//				Vector2 touch2 = Input.GetTouch(1).position;
 //				viewportPt2 = cam.ScreenToViewportPoint(new Vector3(touch2.x, touch2.y, 0));
+//				#endif
 
-				// DEBUG FOR PC
+				#if UNITY_EDITOR
 				viewportPt2 = new Vector3(0.5f, 0.5f, 0);
+				#endif
 
 				if (!isMouse2Set) {
 					isMouse2Set = true;

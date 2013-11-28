@@ -96,6 +96,7 @@ public class Heart : Organ {
 						"ease",
 						LeanTweenType.easeOutElastic
 				});
+		AudioController.Instance.Play(AudioController.Instance.heartbeatUp, 1f);
 
 		// Beat Down
 		LeanTween.delayedCall(gameObject, halfBeatLength, "PumpBlood");
@@ -116,6 +117,8 @@ public class Heart : Organ {
 		Organ[] o = FindObjectsOfType<Organ>();
 		for (int i = 0; i < o.Length; i++) 
 			o[i].OnHeartPump();
+
+		AudioController.Instance.Play(AudioController.Instance.heartbeatDown, 1f);
 	}
 
 	/*
