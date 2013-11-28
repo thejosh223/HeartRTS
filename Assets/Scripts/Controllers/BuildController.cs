@@ -60,7 +60,7 @@ public class BuildController : MonoBehaviour {
 
 				// Set connection point from the sourceVessel
 				Transform closestConnectionPt = ClosestConnectionPoint(_sourceVessel, mousePos);
-				radiusIdentifier.transform.position = _sourceVessel.transform.position;
+				radiusIdentifier.transform.position = _sourceVessel.transform.position + new Vector3(0, 0, 0.2f);
 
 				// Compute Distance
 				float dist = Vector3.Distance(_sourceVessel.transform.position, mousePos);

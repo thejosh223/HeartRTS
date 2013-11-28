@@ -35,6 +35,7 @@ public class VesselSegment : VesselContainer {
 		// set animator's base position.
 		animator.basePosition = endPts[0].position + (endPts[1].position - endPts[0].position).normalized * ratioDistanceToPrev * 
 			Vector3.Distance(endPts[0].position, endPts[1].position);
+		animator.basePosition.z = 0;
 
 		// move up and down slowly
 		float t = (((Time.time - startTime) % ANIM_TIME) / ANIM_TIME) * 2 * Mathf.PI;

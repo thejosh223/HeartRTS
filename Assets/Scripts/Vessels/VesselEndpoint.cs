@@ -10,6 +10,10 @@ public class VesselEndpoint : VesselContainer {
 		// Disable Visuals
 		collider.enabled = false;
 		renderer.enabled = false;
+
+		Vector3 v = transform.position;
+		v.z = -0.1f;
+		transform.position = v;
 	}
 	
 	protected override void OnBuildingConnectionComplete() {
