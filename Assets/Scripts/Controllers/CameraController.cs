@@ -2,6 +2,9 @@
 using System.Collections;
 
 public class CameraController : MonoBehaviour {
+	public float MIN_ORTHO = 10;
+	public float MAX_ORTHO = 22;
+
 	// Flags
 	private bool _allowCamMovement = true;
 
@@ -86,7 +89,7 @@ public class CameraController : MonoBehaviour {
 			delta.z = 0;
 			Vector3 newPos = initCamDown - delta;
 //			newPos.z = newZ;
-			cam.orthographicSize = initOrthoSize * orthoMult;
+			cam.orthographicSize = Mathf.Clamp(initOrthoSize * orthoMult, MIN_ORTHO, MAX_ORTHO);
 			transform.position = newPos;
 		}
 

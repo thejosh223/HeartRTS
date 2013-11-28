@@ -4,13 +4,10 @@ using System.Collections;
 public class LungCell : Organ {
 	// Constants
 	public const float MAX_ENERGY = 100f;
-	public const float ENERGY_REPLACE_RATE = 2f;
+	public const float ENERGY_REPLACE_RATE = 1f;
 
 	//
 	protected Bar monitor;
-
-	// Animation
-	protected Vector3 baseScale;
 
 	protected override void Start() {
 		base.Start();
@@ -20,7 +17,8 @@ public class LungCell : Organ {
 		monitor.followTrans = transform;
 		monitor.offset = new Vector3(0, -0.1f, 0f);
 
-		baseScale = transform.localScale;
+		// Animation
+		animator.hasScaleAnimation = true;
 	}
 
 	protected override void Update() {
@@ -33,7 +31,7 @@ public class LungCell : Organ {
 		monitor.SetValue(percentage);
 
 		// Animation
-		transform.localScale = baseScale * Mathf.Pow(2, (percentage * 2f) - 1f);
+		animator.deltaScale += animator.baseScale * (Mathf.Pow(2, (2f * percentage - 1f)) - 1);
 	}
 
 	public override MovementType GetDefaultBehaviour() {

@@ -25,7 +25,7 @@ public class VesselContainer : Vessel {
 		currentCells.Add(b);
 		
 		float tweenTime = 1f / Heart.Instance.heartPressure;
-		LeanTween.scale(gameObject, baseScale * 1.5f, tweenTime, 
+		LeanTween.scale(gameObject, baseScale * 2f, tweenTime, 
 				new object[] { "ease", LeanTweenType.easeOutBack });
 		StartCoroutine(CallCellExit(b, tweenTime));
 	}

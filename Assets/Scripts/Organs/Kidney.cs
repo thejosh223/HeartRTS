@@ -22,5 +22,4 @@ public class Kidney : Organ {
 	public override MovementType GetDefaultBehaviour() {
 		return MovementType.Wait;
 	}
-
 }

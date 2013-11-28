@@ -4,19 +4,25 @@ using System.Collections.Generic;
 
 public class Vessel : MonoBehaviour {
 	
-	protected static float SEGMENT_BUILDTIME = 0.2f;
+//	protected static float SEGMENT_BUILDTIME = 0.2f;
 //	protected static float SEGMENT_BUILDTIME = 0.0625f;
-//	protected static float SEGMENT_BUILDTIME = 0f;
-	public const float VESSELSEGMENT_COST = 10f;
-	public static int VESSELCOUNTER = 0;
+	protected static float SEGMENT_BUILDTIME = 0f;
+	public const float VESSELSEGMENT_COST = 10f; // cost of energy
+	public static int VESSELCOUNTER = 0; // for naming vessels
 
 	// Graph
 	protected List<VesselConnection> attachedNodes = new List<VesselConnection>();
 
 	// For building connectinos
+	[HideInInspector]
+	public float
+		buildRadius;
 	protected bool _isBuilding = false;
 	protected float _lastBuildTime;
 	protected Vessel[] segmentList;
+
+	// Animator
+	protected Animatulator animator;
 
 	/*
 	 * Init Functions
@@ -25,6 +31,8 @@ public class Vessel : MonoBehaviour {
 	}
 
 	protected virtual void Start() {
+		animator = gameObject.AddComponent<Animatulator>();
+		buildRadius = 6f;
 	}
 
 	protected virtual void Update() {
@@ -83,7 +91,9 @@ public class Vessel : MonoBehaviour {
 	public virtual Transform[] GetConnectionPoints() {
 		return new Transform[] { transform };
 	}
-	
+
+	protected const float OFFSET = 0.5f;
+
 	public virtual void AttachVessel(Vessel v, Transform connectFrom, Transform connectTo) {
 		// Create Segments
 		GameObject vesselPrefab = Heart.Instance.vSegmentPrefab;
@@ -107,11 +117,11 @@ public class Vessel : MonoBehaviour {
 			v2.RotateTowards(connectTo.position - connectFrom.position);
 
 			// point current segment (newly instantiated) backward
-			v2.AttachSegment(v, vTemp);
+			v2.AttachSegment(v, vTemp, connectFrom);
 
 			// point previous segment forward
 			if (vTemp != null)
-				vTemp.AttachSegment(this, v2);
+				vTemp.AttachSegment(this, v2, connectTo);
 
 			// move the list
 			vTemp = v2;
@@ -121,15 +131,15 @@ public class Vessel : MonoBehaviour {
 				vFirst = v2;
 		}
 		// point final segment to target destination
-		vTemp.AttachSegment(this, null);
+		vTemp.AttachSegment(this, null, connectTo);
 
 		// Animate building
 		BuildTo(v);
 
 		// Add to List
 		// TODO: move this to OnBuildingConnectionComplete()
-		attachedNodes.Add(new VesselConnection(v, vTemp)); // null -> first one from this node to v
-		v.attachedNodes.Add(new VesselConnection(this, vFirst)); // null -> last one from this node to v
+		attachedNodes.Add(new VesselConnection(v, vTemp, connectTo)); // null -> first one from this node to v
+		v.attachedNodes.Add(new VesselConnection(this, vFirst, connectFrom)); // null -> last one from this node to v
 	}
 
 	public void BuildTo(Vessel v) {
@@ -165,10 +175,17 @@ public class Vessel : MonoBehaviour {
 	protected class VesselConnection {
 		public Vessel node;
 		public VesselSegment segment;
-
+		public Transform nodeTransform;
+		
 		public VesselConnection (Vessel v, VesselSegment vs) {
 			node = v;
 			segment = vs;
+		}
+
+		public VesselConnection (Vessel v, VesselSegment vs, Transform t) {
+			node = v;
+			segment = vs;
+			nodeTransform = t;
 		}
 
 		public Vessel NextImmediateVessel() {
